@@ -15,8 +15,7 @@ public class RequestController {
     @RequestMapping("/request")
     public Request request(@RequestParam(value="title", required=false, defaultValue="") String title, Model model) {
        
-        
-        try {
+    	try {
 			Title t = new Title(title);
 			model.addAttribute("title", t);			
 		} catch (IOException e) {

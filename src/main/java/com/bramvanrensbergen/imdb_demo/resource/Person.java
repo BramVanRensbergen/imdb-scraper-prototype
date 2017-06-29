@@ -19,17 +19,17 @@ public class Person {
 	
 	private String url;
 	
-	public Person(String id) {
-		if (id == null || id.isEmpty()) {
-			throw new IllegalArgumentException("No valid id provided, please provide in the format 'nm0000186'.");
-		}
-		
-		this.id = id;
-		
-		setNameFromId();
-		
-		this.url = BASE_URL + id;
-	}
+//	public Person(String id) {
+//		if (id == null || id.isEmpty()) {
+//			throw new IllegalArgumentException("No valid id provided, please provide in the format 'nm0000186'.");
+//		}
+//		
+//		this.id = id;
+//		
+//		setNameFromId();
+//		
+//		this.url = BASE_URL + id;
+//	}
 	
 	public Person(String id, String name) {
 		if (id == null || id.isEmpty()) {
@@ -45,9 +45,9 @@ public class Person {
 		this.url = BASE_URL + id;
 	}
 	
-	private void setNameFromId() {
-		//TODO
-	}
+//	private void setNameFromId() {
+//		//TODO
+//	}
 	
 	public String getId() {
 		return id;
