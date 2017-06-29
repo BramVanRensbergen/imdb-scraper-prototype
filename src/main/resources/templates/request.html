@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>IMDb Demo</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1><a th:href = "${title.url}" th:text="${title.titleAndYear}" target="_BLANK">Title</a></h1>	
+
+	<table>
+		<tr><th>Rating</th><td th:text="${title.rating} ? ${title.rating} : 'Not found :('">Rating</td></tr>
+		<tr><th>Genres</th><td th:text="${title.genres} ? ${title.genres} : 'Not found :('">Genres</td></tr>
+		<tr><th>Director</th>
+			<td> <a th:href="${title.director.url} ? ${title.director.url}" th:text="${title.director.name} ? ${title.director.name} : 'Not found :('" target="_BLANK">Director</a></td>
+		</tr>
+		<tr><th>Actors</th>		
+  			<td>
+	  		    <th:block th:each="actor: ${title.primaryActors}">  		    
+	        		<a th:href="${actor.url} ? ${actor.url}" th:text="${actor.name} ? ${actor.name} : 'Not found :('" target="_BLANK">Actors</a>
+	    		</th:block>
+    		</td>
+  		</tr>
+  	</table>  	
+</body>
+</html>
