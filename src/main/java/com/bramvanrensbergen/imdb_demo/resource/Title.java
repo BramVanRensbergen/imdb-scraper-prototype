@@ -28,7 +28,7 @@ public class Title {
 	
 	private Double rating;
 	
-	private Person director;
+	private ArrayList<Person> directors;
 	
 	// currently 15
 	private ArrayList<Person> primaryActors;
@@ -94,17 +94,17 @@ public class Title {
 		}
 				
 		// get director
-		String directorId, directorName;
-		Element directorElement = doc.select("span[itemprop=\"director\"] a").first();
-		
-		directorId = Person.getIdFromUrl(directorElement.attr("href"));
-		directorName = directorElement.text();
-		
-		try {
-			this.director = new Person(directorId, directorName);
-		} catch (IllegalArgumentException e) {
-			System.err.println("could not set director for " + id + "; invalid id or name encountered");
-		}
+		directors = new ArrayList<Person>();
+		Elements directorElements = doc.select(".credit_summary_item span[itemprop=\"director\"] a");		
+		for (Element directorElement : directorElements) {		
+			try {
+				String directorId = Person.getIdFromUrl(directorElement.attr("href"));
+				String directorName = directorElement.text();
+				directors.add(new Person(directorId, directorName));
+			} catch (IllegalArgumentException e) {
+				System.err.println("could not set director for " + id + "; invalid id or name encountered");
+			}
+		}		
 		
 		// get primary actors
 		primaryActors = new ArrayList<Person>();
@@ -149,8 +149,8 @@ public class Title {
 		return rating;
 	}
 
-	public Person getDirector() {
-		return director;
+	public ArrayList<Person> getDirectors() {
+		return directors;
 	}
 
 	public ArrayList<Person> getPrimaryActors() {
