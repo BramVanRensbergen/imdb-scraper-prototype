@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bramvanrensbergen.imdb_demo.data.Title;
 
@@ -22,11 +23,19 @@ public class RequestController {
 
         return "titles";
     }
+    
+    @RequestMapping("/title")
+    public String greeting(@RequestParam(value="ids") String ids, Model model) throws IOException {
+    	List<Title> titles = Title.createTitles(ids); 		
+		model.addAttribute("titles", titles);	
+        return "titles";
+    }
 
     @RequestMapping("/stats/{ids}")
     public String request(@PathVariable("ids") String ids, Model model) throws IOException {       	
 
         return "stats";
     }
+    
     
 }
