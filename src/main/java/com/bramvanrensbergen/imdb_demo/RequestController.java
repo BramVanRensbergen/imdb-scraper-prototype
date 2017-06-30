@@ -14,6 +14,9 @@ import com.bramvanrensbergen.imdb_demo.data.Title;
 @Controller
 public class RequestController {
 
+	/**
+	 * Redirect to a page with some basic info for all provided ids.
+	 */
     @RequestMapping("/title/{ids}")
     public String requestInfo(@PathVariable("ids") String ids, Model model) throws IOException {       
 		
@@ -24,6 +27,9 @@ public class RequestController {
         return "titles";
     }
     
+	/**
+	 * Redirect to a page with some basic info for all provided ids.
+	 */
     @RequestMapping("/title")
     public String greeting(@RequestParam(value="ids") String ids, Model model) throws IOException {
     	List<Title> titles = Title.createTitles(ids); 		

@@ -12,10 +12,18 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+/**
+ * Object representing a movie, series, or episode of a series.
+ * @author Bram Van Rensbergen 
+ */
 public abstract class Title {
 	private static final String BASE_URL = "http://www.imdb.com/title/";
-	private static final String TITLE_SEPARATOR_REGEX = "%20| |\\+|,";
 	
+	/**
+	 * When a list of titles is passed to the web service, they can be separated by a number of characters; this regex string splits them apart.
+	 */
+	private static final String TITLE_SEPARATOR_REGEX = "%20| |\\+|,";
+		
 	protected final String id;
 	
 	protected Document doc;	
@@ -79,15 +87,15 @@ public abstract class Title {
 	}
 	
 	/**
-	 * // full link is in format: /name/nm0000186?ref_=tt_ov_dr
-	 * @param url
-	 * @return
+	 * Get the imdb id contained in the indicated url.
+	 * @param url containing a title's id, e.g. /name/tt0000186?ref_=tt_ov_dr
+	 * @return the id, e.g. tt0000186
 	 */
 	public static String getIdFromUrl(String url) {
 		return url.split("/title/")[1].split("\\?")[0];
 	}
 		
-	public Title(String id, Document doc) throws IOException {
+	protected Title(String id, Document doc) throws IOException {
 		if (id == null || id.isEmpty()) {
 			throw new IllegalArgumentException("No valid id provided, please provide it in the format 'tt0090756'.");
 		}
@@ -110,40 +118,67 @@ public abstract class Title {
 		return id;
 	}	
 	
+	/**
+	 * @return The URL to the IMDb page of the current title.
+	 */
 	public String getUrl() {
 		return url;
 	}
-
-	public String getTitleAndYear() {
+	
+	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 * @return A comma-separated string of all genres of the current title.
+	 */
 	public String getGenres() {
 		return genres;
 	}
 	
+	/**
+	 * @return A set of all genres of the current title.
+	 */
 	public Set<String> getGenresSet() {
 		return genresSet;
 	}
 
+	/**
+	 * @return IMDb rating (out of 10) of the current title.
+	 */
 	public Double getRating() {
 		return rating;
 	}
 	
+	/**
+	 * @return Short summary of the title.
+	 */
 	public String getSummaryText() {
 		return summaryText;
 	}
 
+	/**
+	 * @return The first listed actors of the title (up to 15, usually).
+	 */
 	public ArrayList<Person> getPrimaryActors() {
 		return primaryActors;
 	}
 	
+	/**
+	 * @return The director(s) (for movies of episodes) or creators (for series) of the current title.
+	 */
 	public ArrayList<Person> getDirectorsOrCreators() {
 		return directorsOrCreators;
 	}
 	
+	/**
+	 * @return 'Director' for movies or episodes, and 'Creator' for series.
+	 */
 	public abstract String getDirectorFunctionName();
 	
+	/**
+	 * @return Additional info on the current title; for episodes, this contains the name of the series as well as season and episode number.
+	 */
 	public abstract String getSubTitle();
 	
 

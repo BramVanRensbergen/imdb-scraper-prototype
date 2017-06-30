@@ -5,14 +5,23 @@ import java.io.IOException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+/**
+ * Represents a single episode in a TV-Series.
+ * @author Bram Van Rensbergen
+ */
 public class Episode extends Title {
-	
+		
 	private String seriesName;
 	
 	private String seriesId;
 	
 	private String seasonAndEpisodeNumberDesc;
 	
+	/**
+	 * @param id IMDb id of the episode (e.g. 'tt4108304')
+	 * @param doc Document containing html of the episode's imdb page.
+	 * @throws IOException If {@code doc} is not a valid imdb page.
+	 */
 	public Episode(String id, Document doc) throws IOException {
 		super(id, doc);		
 		
@@ -22,18 +31,26 @@ public class Episode extends Title {
 		seriesId = Title.getIdFromUrl(parent.attr("href"));
 		
 		Element seasonInfo = doc.select(".navigation_panel .bp_heading").first();		
-		seasonAndEpisodeNumberDesc = seasonInfo.text();
-		
+		seasonAndEpisodeNumberDesc = seasonInfo.text();		
 	}
 	
+	/**
+	 * @return Name of the series of which this episode is part.
+	 */
 	public String getSeriesName() {
 		return seriesName;
 	}
 
+	/**
+	 * @return IMDb id of the series of which this episode is part.
+	 */
 	public String getSeriesId() {
 		return seriesId;
 	}
 	
+	/**
+	 * @return String containing season and episode number of this episode.
+	 */
 	public String getSeasonAndEpisodeNumberDesc() {
 		return seasonAndEpisodeNumberDesc;
 	}
@@ -46,9 +63,5 @@ public class Episode extends Title {
 	@Override
 	public String getSubTitle() {
 		return seriesName + ", " + seasonAndEpisodeNumberDesc.replace(" |", ", ");
-	}
-	
-
-
-
+	}	
 }

@@ -9,7 +9,7 @@
 
 	<th:block th:each="title: ${titles}"> 
 	<div class="entry">
-		<h1><a th:href = "${title.url}" th:text="${title.titleAndYear}" target="_BLANK">Title</a></h1>	
+		<h1><a th:href = "${title.url}" th:text="${title.title}" target="_BLANK">Title</a></h1>	
 		<h4 class="subtitle" th:text="${title.subTitle} ? ${title.subTitle}"></h4>
 		
 		<table>
