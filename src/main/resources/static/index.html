@@ -7,12 +7,25 @@
 </head>
 <body>
     <div class="instructions">
-    <h2>Lookup basic info:</h2>
-    <p>Enter any number of space or comma-separated imdb ids (e.g., 'tt0118715 tt4093826 tt4108304'):</p>
-    <form action="/title" method="get">
-    	<p><input type="text" name="ids" />
-        <p><input type="submit" value="Go" /></p>
-    </form>    
+	    <h2>Lookup basic info:</h2>
+	    <p>Enter any number of space or comma-separated imdb ids (e.g., 'tt0118715 tt4093826 tt4108304'):</p>
+	    <form action="/title" method="get">
+	    	<p><input type="text" name="ids" />
+	        <p><input type="submit" value="Go" /></p>
+	    </form>    
+	    
+	     <h2>Compute stats:</h2>
+	    <p>Enter any number of space or comma-separated imdb ids (e.g., 'tt0118715 tt4093826 tt4108304'):</p>
+	    <form action="/stats" method="get">
+	    	<p><input type="text" name="ids" />
+	        <p><input type="submit" value="Go" /></p>
+	    </form> 
+	    
+	    <p>Use sample data (my own exported ratings):</p>
+	    <form action="/stats" method="get">
+	        <p><input type="submit" value="Go" /></p>
+	    </form> 
+    
     </div>
     
 </body>

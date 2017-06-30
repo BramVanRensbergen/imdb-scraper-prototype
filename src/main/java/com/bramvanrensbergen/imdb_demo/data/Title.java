@@ -39,6 +39,8 @@ public abstract class Title {
 	private Double rating;	
 	
 	private String summaryText;
+		
+	private Integer userRating = -1;
 
 	/**
 	 * The director(s) (for episodes and movies) or creator(s) (for series) of the current title.
@@ -57,9 +59,18 @@ public abstract class Title {
 	public static List<Title> createTitles(String title_ids) throws IOException {
 		ArrayList<Title> titlesList = new ArrayList<Title>();
 		
+		Set<String> alreadyAddedTitles = new HashSet<String>();
+		
 		String[] titleIds = title_ids.split(TITLE_SEPARATOR_REGEX);
 		
 		for (String id : titleIds) {
+			
+			// make sure to avoid any duplicates
+			if (alreadyAddedTitles.contains(id)) {
+				continue;
+			}
+			alreadyAddedTitles.add(id);
+			
 			Document doc = Jsoup.connect(BASE_URL + id).get();
 			Element e = doc.select(".titleBar .subtext a:last-child").first();
 			
@@ -72,6 +83,8 @@ public abstract class Title {
 			
 			Title t;
 			
+			// find out what type of title this is
+			// not exactly elegant but hey...
 			if (desc.contains("TV Series")) {
 				t = new Series(id, doc);
 			} else if (desc.contains("Episode air")) {
@@ -84,6 +97,10 @@ public abstract class Title {
 		}
 		
 		return titlesList;
+	}
+	
+	public static List<Title> createTitlesFromSampleData() {
+		return null;
 	}
 	
 	/**
@@ -110,6 +127,11 @@ public abstract class Title {
 		this.directorsOrCreators = obtainDirectorOrCreatorsFromHtml();
 		this.summaryText = obtainSummaryTextFromHtml();
 	}		
+	
+	protected Title(String id, Document doc, int userRating) throws IOException {
+		this(id, doc);
+		this.userRating = userRating;
+	}
 	
 	/**
 	 * @return The IMDb id of the current title, in the format 'tt0090756'.
@@ -158,6 +180,13 @@ public abstract class Title {
 	}
 
 	/**
+	 * @return The current user's rating of the title; only used when analyzing exported ratings.
+	 */
+	public double getUserRating() {
+		return userRating;
+	}
+
+	/**
 	 * @return The first listed actors of the title (up to 15, usually).
 	 */
 	public ArrayList<Person> getPrimaryActors() {
@@ -180,9 +209,7 @@ public abstract class Title {
 	 * @return Additional info on the current title; for episodes, this contains the name of the series as well as season and episode number.
 	 */
 	public abstract String getSubTitle();
-	
-
-	
+		
 	/**
 	 * Lookup the title for the current title in its html Document.
  	 * @throws NullPointerException If the title cannot be found, indicating Document is probably not a valid IMDb page.

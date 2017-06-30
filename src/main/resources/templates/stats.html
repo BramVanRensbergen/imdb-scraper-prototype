@@ -1,10 +1,34 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head> 
-    <title>IMDb Demo</title> 
+    <title>IMDb Statistics</title> 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="../../style.css" th:href="@{/style.css}" />    
 </head>
 <body>
-	biep biep
+	<div class="stats">
+	<h1>Stats</h1>
+	<p>Analyzed <span th:text="${stats.nTitles}">number</span> titles, containing 
+	<span th:text="${stats.nMovies}">number</span> movies, <span th:text="${stats.nSeries}">number</span>
+	TV-Shows, and <span th:text="${stats.nEpisodes}">number</span> episodes.</p>
+	
+	<h3>Actor Stats</h3>
+	<p>In how many of these titles each actor was cast, the average imdb rating of those titles, and your average rating of those titles (if you used your exported ratings).</p>
+	
+	<table>
+		<tr>
+	    	<th>Name</th>
+	    	<th>Count</th>
+	    	<th>Avg. rating</th>
+	    	<th>Your rating</th>
+	 	 </tr>
+	 	 <tr th:each="actorStat : ${stats.actorStats}">
+             <td><a th:href="${actorStat.actor.url}" th:text="${actorStat.actor.name}" target="_BLANK">Actors</a></td>
+             <td th:text="${actorStat.nbOfOccurrences}">Count</td>
+             <td th:text="${actorStat.ratingAvg}">Rating</td>
+             <td th:text="${actorStat.userRatingAvg > -1} ? ${actorStat.userRatingAvg}">User Rating</td>
+         </tr>
+	</table>  
+	</div>
 </body>
 </html>
