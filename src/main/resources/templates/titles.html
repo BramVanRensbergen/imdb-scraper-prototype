@@ -3,13 +3,14 @@
 <head> 
     <title>IMDb Demo</title> 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+     <link rel="stylesheet" type="text/css" media="all" href="../../style.css" th:href="@{/style.css}" />
 </head>
 <body>
 
 	<th:block th:each="title: ${titles}"> 
-
+	<div class="entry">
 		<h1><a th:href = "${title.url}" th:text="${title.titleAndYear}" target="_BLANK">Title</a></h1>	
-		<h4 th:text="${title.subTitle} ? ${title.subTitle}"></h4>
+		<h4 class="subtitle" th:text="${title.subTitle} ? ${title.subTitle}"></h4>
 		
 		<table>
 			<tr><th>Rating</th><td th:text="${title.rating} ? ${title.rating} : 'Not found :('">Rating</td></tr>
@@ -30,6 +31,6 @@
 	  		</tr>
 	  		<tr><th>Summary</th><td th:text="${title.summaryText} ? ${title.summaryText} : 'Not found :('">Rating</td></tr>
 	  	</table>  
-  	</th:block>	
+  	</div></th:block>	
 </body>
 </html>
