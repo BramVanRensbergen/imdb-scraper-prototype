@@ -1,16 +1,22 @@
 package com.bramvanrensbergen.imdb_demo.data;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * Object representing a movie, series, or episode of a series.
@@ -47,7 +53,7 @@ public abstract class Title {
 	 */
 	private ArrayList<Person> directorsOrCreators;
 
-	// currently 15
+	// currently max. 15
 	private ArrayList<Person> primaryActors;
 
 	/**
@@ -79,28 +85,32 @@ public abstract class Title {
 				continue;
 			}
 			
-			String desc = e.text();
-			
-			Title t;
-			
-			// find out what type of title this is
-			// not exactly elegant but hey...
-			if (desc.contains("TV Series")) {
-				t = new Series(id, doc);
-			} else if (desc.contains("Episode air")) {
-				t = new Episode(id, doc);
-			} else {
-				t = new Movie(id, doc);
-			}			
-			
-			titlesList.add(t);
+			String titleTypeDesc = e.text();			
+			titlesList.add(createTitle(id, doc, titleTypeDesc));
 		}
 		
 		return titlesList;
 	}
 	
-	public static List<Title> createTitlesFromSampleData() {
-		return null;
+	
+	
+	public static List<Title> createTitlesFromSampleData() throws FileNotFoundException, IOException {
+		ArrayList<Title> titlesList = new ArrayList<Title>();
+
+		Reader in = new InputStreamReader(new ClassPathResource("static/sample_ratings_small.csv").getInputStream());
+		Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
+		for (CSVRecord record : records) {
+		    String id = record.get("const");
+		    String typeString = record.get("Title type");
+		    String userRating = record.get("You rated");
+		    
+		    Document doc = Jsoup.connect(BASE_URL + id).get();
+		    Title t = createTitle(id, doc, typeString);
+		    t.userRating = Integer.parseInt(userRating);
+		    titlesList.add(t);
+		}
+
+		return titlesList;
 	}
 	
 	/**
@@ -111,6 +121,24 @@ public abstract class Title {
 	public static String getIdFromUrl(String url) {
 		return url.split("/title/")[1].split("\\?")[0];
 	}
+	
+	private static Title createTitle(String id, Document doc, String titleTypeDescription) throws IOException {
+		Title t;
+		
+		// find out what type of title this is
+		// not exactly elegant but hey...
+		if (titleTypeDescription.contains("Series") ) {
+			t = new Series(id, doc);
+		} else if (titleTypeDescription.contains("Episode")) {
+			t = new Episode(id, doc);
+		} else {
+			t = new Movie(id, doc);
+		}			
+		
+		return t;
+	}
+	
+
 		
 	protected Title(String id, Document doc) throws IOException {
 		if (id == null || id.isEmpty()) {

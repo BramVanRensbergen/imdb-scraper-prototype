@@ -56,7 +56,7 @@ public class RequestController {
 	 * Redirect to a page with some statistics for all provided ids.
 	 */
     @RequestMapping("/sample")
-    public String requestSampleStats(Model model) throws IOException {       
+    public String requestSampleStats(Model model) throws IOException { 
     	Statistics stats = new Statistics(Title.createTitlesFromSampleData());
     	model.addAttribute("stats", stats);	
         return "stats";
