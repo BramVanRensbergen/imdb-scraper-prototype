@@ -3,16 +3,17 @@
 <head> 
     <title>IMDb prototype scraper</title> 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="../../style.css"/>    
 </head>
 <body>
-    Sample usage: <a href="/request?title=tt0118715">/request?title=tt0118715</a>
-    
-    <form action="#" th:action="@{/request}" th:object="${request}" method="post">
-    	<p>Title: <input type="text" th:field="*{title}" /></p>
-    	<p>Titles: <input type="text" th:field="*{titles}" /></p>
-        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-    </form>
-    
+    <div class="instructions">
+    <h2>Lookup basic info:</h2>
+    <p>Enter any number of space or comma-separated imdb ids (e.g., 'tt0118715 tt4093826 tt4108304'):</p>
+    <form action="/title" method="get">
+    	<p><input type="text" name="ids" />
+        <p><input type="submit" value="Go" /></p>
+    </form>    
+    </div>
     
 </body>
 </html>
