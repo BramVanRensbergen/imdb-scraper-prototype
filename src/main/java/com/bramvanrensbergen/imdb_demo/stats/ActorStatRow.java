@@ -2,6 +2,10 @@ package com.bramvanrensbergen.imdb_demo.stats;
 
 import com.bramvanrensbergen.imdb_demo.data.Person;
 
+/**
+ * Object representing statistics generated for a specific actor. Created in the Statistics class.
+ * @author Bram Van Rensbergen
+ */
 public class ActorStatRow {
 
 	protected Person actor;
@@ -35,12 +39,12 @@ public class ActorStatRow {
 		return userRatingSum;
 	}
 
-	public double getRatingAvg() {
-		return ratingAvg;
+	public String getRatingAvg() {
+		return String.format( "%.2f", ratingAvg);
 	}
 
-	public double getUserRatingAvg() {
-		return userRatingAvg;
+	public String getUserRatingAvg() {
+		return String.format( "%.2f", userRatingAvg);
 	}
 	
 }

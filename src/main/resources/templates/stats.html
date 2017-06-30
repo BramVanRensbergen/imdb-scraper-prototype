@@ -13,7 +13,8 @@
 	TV-Shows, and <span th:text="${stats.nEpisodes}">number</span> episodes.</p>
 	
 	<h3>Actor Stats</h3>
-	<p>In how many of these titles each actor was cast, the average imdb rating of those titles, and your average rating of those titles (if you used your exported ratings).</p>
+	<p>For the actors that were cast most often in the indicated titles, in how many titles they were was cast, 
+		the average imdb rating of those titles, and your average rating of those titles (if you used your exported ratings).</p>
 	
 	<table>
 		<tr>
@@ -26,7 +27,7 @@
              <td><a th:href="${actorStat.actor.url}" th:text="${actorStat.actor.name}" target="_BLANK">Actors</a></td>
              <td th:text="${actorStat.nbOfOccurrences}">Count</td>
              <td th:text="${actorStat.ratingAvg}">Rating</td>
-             <td th:text="${actorStat.userRatingAvg > -1} ? ${actorStat.userRatingAvg}">User Rating</td>
+             <td th:text="${actorStat.userRatingAvg != '-1'} ? ${actorStat.userRatingAvg}">User Rating</td>
          </tr>
 	</table>  
 	</div>
