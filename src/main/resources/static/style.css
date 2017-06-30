@@ -1,6 +1,6 @@
-body p {
-	text-align: justify;   	
+body {
 }
+
 
 a {
 	color: #0079d3 !important;
@@ -18,11 +18,20 @@ h1 {
 .subtitle {
 	margin-top: 0px;
 	margin-bottom: 5px;
-	padding-top: 0px;
-	
+	padding-top: 0px;	
 }
 
 th {
 	text-align: right;
 	padding-right: 10px;
+}
+
+.instructions {
+	padding-left: 100px;
+	max-width: 40em !important;
+}
+
+.instructions input[type=text] {
+	width: 100%;
+	  
 }
