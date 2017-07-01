@@ -17,12 +17,12 @@ import com.bramvanrensbergen.imdb_demo.data.Title;
  * Generate a number of basic stats for the indicated titles.
  * @author Bram Van Rensbergen 
  */
-public class Statistics {
-
+public class Statistics {	
 	private static final int ACTORS_TO_DISPLAY = 50;
 	private static final int DIRECTORS_TO_DISPLAY = 20;
 
-
+	private List<Title> analyzedTitles;
+	
 	private List<PersonStatRow> actorStats;
 	
 	private List<PersonStatRow> directorStats;
@@ -35,7 +35,9 @@ public class Statistics {
 	/**
 	 * Generate a set of statistics for the indicated titles.
 	 */
-	public Statistics(List<Title> titles) {	 		
+	public Statistics(List<Title> titles) {	 
+		analyzedTitles = titles;
+		
 		nTitles = titles.size();
 		
 		Map<String, PersonStatRow> actorStatsMap = new HashMap<String, PersonStatRow>();
@@ -94,6 +96,13 @@ public class Statistics {
 		
 		PersonStatRow.calculateAndSetAllAverages(actorStats);
 		PersonStatRow.calculateAndSetAllAverages(directorStats);		
+	}
+
+	/**
+	 * @return A list of the titles on which this analysis is based.
+	 */
+	public List<Title> getAnalyzedTitles() {
+		return analyzedTitles;
 	}
 
 	/**

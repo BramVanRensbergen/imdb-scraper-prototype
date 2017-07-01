@@ -1,7 +1,6 @@
 package com.bramvanrensbergen.imdb_demo;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,10 +29,7 @@ public class RequestController {
 	 */
     @RequestMapping("/title/{ids}")
     public String requestStatsFromUrl(@PathVariable("ids") String ids, Model model) throws IOException {  		
-    	List<Title> titles = Title.createTitlesFromSingleLineOfIds(ids);
-    	Statistics stats = new Statistics(titles);
-    	model.addAttribute("stats", stats);	
-    	model.addAttribute("titles", titles);	
+    	model.addAttribute("stats", new Statistics(Title.createTitlesFromSingleLineOfIds(ids)));	
         return "stats";
     }
     /**
@@ -42,18 +38,13 @@ public class RequestController {
 	 */
     @RequestMapping("/stats")
     public String requestStatsFromText(@RequestParam(value="titles") String titles, Model model) throws IOException {
-    	List<Title> titleList = Title.createTitlesFromText(titles);    	
-    	Statistics stats = new Statistics(titleList);
-    	model.addAttribute("stats", stats);	
-    	model.addAttribute("titles", titleList);	
+    	model.addAttribute("stats", new Statistics(Title.createTitlesFromText(titles)));	
         return "stats";
-//        return "redirect:/";
     }
 
     @RequestMapping("/sample")
     public String requestSampleStats(Model model) throws IOException { 
-    	Statistics stats = new Statistics(Title.createTitlesFromSampleData());
-    	model.addAttribute("stats", stats);	
+    	model.addAttribute("stats", new Statistics(Title.createTitlesFromSampleData()));
         return "stats";
     }
     

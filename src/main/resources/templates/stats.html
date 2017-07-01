@@ -35,7 +35,7 @@
 				</div>
 				<div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
 					<div class="panel-body">
-						<th:block th:each="title: ${titles}">
+						<th:block th:each="title: ${stats.analyzedTitles}">
 							<div class="titleEntry">
 								<h1>
 									<a th:href="${title.url}" th:text="${title.title}"	target="_BLANK">Title</a><small th:text="${title.subTitle} ? ${title.subTitle}"></small>
@@ -45,6 +45,10 @@
 									<tr>
 										<th>Rating</th>
 										<td	th:text="${title.rating} ? ${title.rating} : 'Not found :('">Rating</td>
+									</tr>
+									<tr th:if="${title.userRating}">
+										<th>Your Rating</th>
+										<td	th:text="${title.userRating}">Your Rating</td>
 									</tr>
 									<tr>
 										<th>Genres</th>
