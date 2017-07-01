@@ -1,12 +1,14 @@
 package com.bramvanrensbergen.imdb_demo.stats;
 
+import java.util.List;
+
 import com.bramvanrensbergen.imdb_demo.data.Person;
 
 /**
  * Object representing statistics generated for a specific actor. Created in the Statistics class.
  * @author Bram Van Rensbergen
  */
-public class ActorStatRow {
+public class PersonStatRow {
 
 	protected Person actor;
 	protected int nbOfOccurrences = 0;
@@ -15,7 +17,7 @@ public class ActorStatRow {
 	protected double ratingAvg;
 	protected double userRatingAvg; 
 	
-	public ActorStatRow(Person actor) {
+	public PersonStatRow(Person actor) {
 		this.actor = actor;
 		
 		nbOfOccurrences = 0;
@@ -47,4 +49,10 @@ public class ActorStatRow {
 		return String.format( "%.2f", userRatingAvg);
 	}
 	
+	protected static void calculateAndSetAllAverages(List<PersonStatRow> stats) {
+		for (PersonStatRow p : stats) {
+			p.ratingAvg = (double) p.ratingSum / p.nbOfOccurrences;
+			p.userRatingAvg = (double) p.userRatingSum / p.nbOfOccurrences;			
+		}
+	}
 }
