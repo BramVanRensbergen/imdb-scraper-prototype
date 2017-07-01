@@ -1,6 +1,9 @@
 package com.bramvanrensbergen.imdb_demo;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+
+import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,12 +11,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bramvanrensbergen.imdb_demo.data.Title;
 import com.bramvanrensbergen.imdb_demo.stats.Statistics;
+import com.bramvanrensbergen.imdb_demo.titel.TitleLookupService;
+
 
 @Controller
 public class RequestController {
 
+	@Resource 
+	private TitleLookupService titleLookupService;
+		
 	/**
 	 * Redirect to a page with some statistics for all provided ids.
 	 * <br>URL should contain list of ids, separated by space, comma, plus, or '%20'. 
@@ -29,7 +36,7 @@ public class RequestController {
 	 */
     @RequestMapping("/title/{ids}")
     public String requestStatsFromUrl(@PathVariable("ids") String ids, Model model) throws IOException {  		
-    	model.addAttribute("stats", new Statistics(Title.createTitlesFromSingleLineOfIds(ids)));	
+    	model.addAttribute("stats", new Statistics(titleLookupService.createTitlesFromSingleLineOfIds(ids)));	
         return "stats";
     }
     /**
@@ -38,13 +45,13 @@ public class RequestController {
 	 */
     @RequestMapping("/stats")
     public String requestStatsFromText(@RequestParam(value="titles") String titles, Model model) throws IOException {
-    	model.addAttribute("stats", new Statistics(Title.createTitlesFromText(titles)));	
+    	model.addAttribute("stats", new Statistics(titleLookupService.createTitlesFromText(titles)));	
         return "stats";
     }
 
     @RequestMapping("/sample")
-    public String requestSampleStats(Model model) throws IOException { 
-    	model.addAttribute("stats", new Statistics(Title.createTitlesFromSampleData()));
+    public String requestSampleStats(Model model) throws IOException, InterruptedException, ExecutionException {     	
+    	model.addAttribute("stats", new Statistics(titleLookupService.createTitlesFromSampleData()));
         return "stats";
     }
     
