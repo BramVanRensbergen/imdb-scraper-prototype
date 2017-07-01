@@ -1,27 +1,32 @@
 <!DOCTYPE HTML>
-<html>
-<head> 
-    <title>IMDb prototype scraper</title> 
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>IMDb prototype scraper</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" media="all" href="../../style.css"/>    
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<link rel="stylesheet" type="text/css" media="all"
+		href="../../style.css" th:href="@{/style.css}" />
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+		crossorigin="anonymous" />
 </head>
 <body>
-    <div class="instructions">
-	    <h2>Lookup basic info:</h2>
-	    <p>Enter any number of space or comma-separated imdb ids (e.g., 'tt0118715 tt4093826 tt4108304'):</p>
-	    <form action="/title" method="get">
-	    	<p><input type="text" name="ids" />
-	        <p><input type="submit" value="Go" /></p>
-	    </form>    
+    <div class="instructions container" role="main">
+	   
+	    <h2>Generate movie statistics</h2>
+	    <p>Enter any number of movie/series titles or imdb ids:</p>
+	    <p>e.g. <br/>tt0118715
+				<br/>tt4093826
+				<br/>tt4108304</p>
 	    
-	     <h2>Compute stats:</h2>
-	    <p>Enter any number of space or comma-separated imdb ids (e.g., 'tt0118715 tt4093826 tt4108304'):</p>
 	    <form action="/stats" method="get">
-	    	<p><input type="text" name="ids" />
-	        <p><input type="submit" value="Go" /></p>
+		    <textarea class="form-control" rows="5" name="titles"></textarea>
+	    	<p><input type="submit" value="Go" /></p>
 	    </form> 
 	    
-	    <p>Use sample data (my own exported ratings):</p>
+	    <br/><br/>
+	    <p>Or use sample data (part of my own exported ratings):</p>
 	    <form action="/sample" method="get">
 	        <p><input type="submit" value="Go" /></p>
 	    </form> 
