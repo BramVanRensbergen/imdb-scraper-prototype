@@ -2,7 +2,6 @@ package com.bramvanrensbergen.imdb_demo.stats;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +19,16 @@ import com.bramvanrensbergen.imdb_demo.titel.Title;
 public class Statistics {	
 	private static final int ACTORS_TO_DISPLAY = 50;
 	private static final int DIRECTORS_TO_DISPLAY = 20;
+	private static final int GENRES_TO_DISPLAY = 10;
 
 	private List<Title> analyzedTitles;
 	
-	private List<PersonStatRow> actorStats;
+	private List<StatRow> actorStats;
 	
-	private List<PersonStatRow> directorStats;
+	private List<StatRow> directorStats;
 	
+	private List<StatRow> genreStats;	
+		
 	private int nTitles;
 	private int nMovies = 0;
 	private int nEpisodes = 0;
@@ -40,9 +42,10 @@ public class Statistics {
 		
 		nTitles = titles.size();
 		
-		Map<String, PersonStatRow> actorStatsMap = new HashMap<String, PersonStatRow>();
-		Map<String, PersonStatRow> directorStatsMap = new HashMap<String, PersonStatRow>();
-		
+		Map<String, StatRow> actorStatsMap = new HashMap<String, StatRow>();
+		Map<String, StatRow> directorStatsMap = new HashMap<String, StatRow>();
+		Map<String, StatRow> genreStatsMap = new HashMap<String, StatRow>();
+				
 		for (Title t : titles) {
 			
 			if (t instanceof Movie) {
@@ -58,7 +61,7 @@ public class Statistics {
 				String key = p.getId();
 
 				if (!actorStatsMap.containsKey(key)) {
-					actorStatsMap.put(key, new PersonStatRow(p));
+					actorStatsMap.put(key, new StatRow(p.getName(), p.getUrl()));
 				}
 
 				actorStatsMap.get(key).nbOfOccurrences++;
@@ -66,36 +69,44 @@ public class Statistics {
 				actorStatsMap.get(key).incrementUserRatingSum(t.getUserRating());				
 			}		
 
-			// actor stats
+			// director stats
 			for (Person p : t.getDirectorsOrCreators()) {
 				String key = p.getId();
 
 				if (!directorStatsMap.containsKey(key)) {
-					directorStatsMap.put(key, new PersonStatRow(p));
+					directorStatsMap.put(key, new StatRow(p.getName(), p.getUrl()));
 				}
 
 				directorStatsMap.get(key).nbOfOccurrences++;
 				directorStatsMap.get(key).incrementRatingSum(t.getRating());				
 				directorStatsMap.get(key).incrementUserRatingSum(t.getUserRating());	
 			}	 
+			
+			// genres stats
+			for (String g : t.getGenresSet()) {
+				
+				if (!genreStatsMap.containsKey(g)) {
+					genreStatsMap.put(g, new StatRow(g));
+				}
+
+				genreStatsMap.get(g).nbOfOccurrences++;
+				genreStatsMap.get(g).incrementRatingSum(t.getRating());				
+				genreStatsMap.get(g).incrementUserRatingSum(t.getUserRating());							
+			}
 		}
 
-		// sort actors, directors by occurrence
-		actorStats = new ArrayList<PersonStatRow>(actorStatsMap.values());		
-		directorStats = new ArrayList<PersonStatRow>(directorStatsMap.values());		
-		Collections.sort(actorStats, new Comparator<PersonStatRow>() {
-			@Override public int compare(PersonStatRow a1, PersonStatRow a2) {
-				return a2.nbOfOccurrences - a1.nbOfOccurrences; // Ascending
-	        }
-	    });
-		Collections.sort(directorStats, new Comparator<PersonStatRow>() {
-			@Override public int compare(PersonStatRow a1, PersonStatRow a2) {
-				return a2.nbOfOccurrences - a1.nbOfOccurrences; // Ascending
-	        }
-	    });
+		// sort rows by occurrence, calculate averages
+		actorStats = new ArrayList<StatRow>(actorStatsMap.values());		
+		directorStats = new ArrayList<StatRow>(directorStatsMap.values());		
+		genreStats = new ArrayList<StatRow>(genreStatsMap.values());		
 		
-		PersonStatRow.calculateAndSetAllAverages(actorStats);
-		PersonStatRow.calculateAndSetAllAverages(directorStats);		
+		Collections.sort(actorStats);
+		Collections.sort(directorStats);
+		Collections.sort(genreStats);
+		
+		StatRow.calculateAndSetAllAverages(actorStats);
+		StatRow.calculateAndSetAllAverages(directorStats);	
+		StatRow.calculateAndSetAllAverages(genreStats);	
 	}
 
 	/**
@@ -106,23 +117,24 @@ public class Statistics {
 	}
 
 	/**
-	 * @return Stats for the {@code ACTORS_TO_DISPLAY} that were cast most often in the indicated titles.
+	 * @return Stats for the {@code ACTORS_TO_DISPLAY} actors that were cast most often in the indicated titles.
 	 */
-	public List<PersonStatRow> getActorStats() {
-		if (actorStats.size() <= ACTORS_TO_DISPLAY) {
-			return actorStats;
-		}
-		return actorStats.subList(0, ACTORS_TO_DISPLAY);
+	public List<StatRow> getActorStats() {
+		return actorStats.subList(0, Math.min(actorStats.size(), ACTORS_TO_DISPLAY));
 	}
 	
 	/**
-	 * @return Stats for the {@code DIRECTORS_TO_DISPLAY} that were cast most often in the indicated titles.
+	 * @return Stats for the {@code DIRECTORS_TO_DISPLAY} directors that directed most frequently in the indicated titles.
 	 */
-	public List<PersonStatRow> getDirectorStats() {
-		if (directorStats.size() <= DIRECTORS_TO_DISPLAY) {
-			return directorStats;
-		}
-		return directorStats.subList(0, DIRECTORS_TO_DISPLAY);
+	public List<StatRow> getDirectorStats() {		
+		return directorStats.subList(0, Math.min(directorStats.size(), DIRECTORS_TO_DISPLAY));
+	}
+	
+	/**
+	 * @return Stats for the {@code GENRES_TO_DISPLAY} genres that occurred most frequently in the indicated titles.
+	 */
+	public List<StatRow> getGenreStats() {		
+		return genreStats.subList(0, Math.min(genreStats.size(), GENRES_TO_DISPLAY));
 	}
 
 	/**
@@ -152,6 +164,8 @@ public class Statistics {
 	public int getnSeries() {
 		return nSeries;
 	}
+	
+
 	
 	
 }

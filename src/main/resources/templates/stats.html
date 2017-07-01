@@ -29,8 +29,8 @@
 			<div class="panel panel-default">
 				<div class="panel-heading" role="tab" id="headingOne">
 					<h4 class="panel-title">
-						<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" 
-							href="#collapseOne" aria-expanded="false" aria-controls="collapseOne"> Movie Metadata </a>
+						<a class="collapsed" role="button" data-toggle="collapse"
+							href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">Metadata </a>
 					</h4>
 				</div>
 				<div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
@@ -81,11 +81,12 @@
 					</div>
 				</div>
 			</div>
+			
 			<div class="panel panel-default">
 				<div class="panel-heading" role="tab" id="headingTwo">
 					<h4 class="panel-title">
-						<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
-							aria-expanded="false" aria-controls="collapseTwo"> Actor Stats </a>
+						<a class="collapsed" role="button" data-toggle="collapse" href="#collapseTwo"
+							aria-expanded="false" aria-controls="collapseTwo"> Actors </a>
 					</h4>
 				</div>
 				<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
@@ -95,30 +96,30 @@
 							cast, the average imdb rating of those titles, and your average
 							rating of those titles (if you used your exported ratings).</p>
 
-						<table class="personStats table">
+						<table class="statTable table">
 							<tr>
 								<th>Name</th>
 								<th>Count</th>
 								<th>Avg. title rating</th>
 								<th>Your title rating</th>
 							</tr>
-							<tr th:each="personStat : ${stats.actorStats}">
-								<td><a th:href="${personStat.actor.url}" th:text="${personStat.actor.name}" target="_BLANK">
+							<tr th:each="statRow : ${stats.actorStats}">
+								<td><a th:href="${statRow.url}" th:text="${statRow.name}" target="_BLANK">
 									Actors</a></td>
-								<td th:text="${personStat.nbOfOccurrences}">Count</td>
-								<td th:text="${personStat.ratingAvg} ? ${personStat.ratingAvg}">Rating</td>
-								<td th:text="${personStat.userRatingAvg} ? ${personStat.userRatingAvg}">User Rating</td>
+								<td th:text="${statRow.nbOfOccurrences}">Count</td>
+								<td th:text="${statRow.ratingAvg} ? ${statRow.ratingAvg}">Rating</td>
+								<td th:text="${statRow.userRatingAvg} ? ${statRow.userRatingAvg}">User Rating</td>
 							</tr>
 						</table>		
 					</div>
 				</div>
 			</div>
+			
 			<div class="panel panel-default">
 				<div class="panel-heading" role="tab" id="headingThree">
 					<h4 class="panel-title">
-						<a class="collapsed" role="button" data-toggle="collapse"
-							data-parent="#accordion" href="#collapseThree"
-							aria-expanded="false" aria-controls="collapseThree"> Director Stats </a>
+						<a class="collapsed" role="button" data-toggle="collapse" href="#collapseThree"
+							aria-expanded="false" aria-controls="collapseThree"> Directors </a>
 					</h4>
 				</div>
 				<div id="collapseThree" class="panel-collapse collapse"	role="tabpanel" aria-labelledby="headingThree">
@@ -128,19 +129,49 @@
 								of those titles, and your average rating of those titles (if you
 								used your exported ratings).</p>
 	
-							<table class="personStats table">
+							<table class="statTable table">
 								<tr>
 									<th>Name</th>
 									<th>Count</th>
 									<th>Avg. title rating</th>
 									<th>Your title rating</th>
 								</tr>
-								<tr th:each="personStat : ${stats.directorStats}">
-									<td><a th:href="${personStat.actor.url}"
-										th:text="${personStat.actor.name}" target="_BLANK">Actors</a></td>
-									<td th:text="${personStat.nbOfOccurrences}">Count</td>
-									<td th:text="${personStat.ratingAvg} ? ${personStat.ratingAvg}">Rating</td>
-									<td th:text="${personStat.userRatingAvg} ? ${personStat.userRatingAvg}">User Rating</td>
+								<tr th:each="statRow : ${stats.directorStats}">
+									<td><a th:href="${statRow.url}"
+										th:text="${statRow.name}" target="_BLANK">Actors</a></td>
+									<td th:text="${statRow.nbOfOccurrences}">Count</td>
+									<td th:text="${statRow.ratingAvg} ? ${statRow.ratingAvg}">Rating</td>
+									<td th:text="${statRow.userRatingAvg} ? ${statRow.userRatingAvg}">User Rating</td>
+								</tr>
+							</table>									
+					</div>
+				</div>
+			</div>
+			
+			<div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="headingThree">
+					<h4 class="panel-title">
+						<a class="collapsed" role="button" data-toggle="collapse" href="#collapseFour"
+							aria-expanded="false" aria-controls="collapseFour"> Genres </a>
+					</h4>
+				</div>
+				<div id="collapseFour" class="panel-collapse collapse"	role="tabpanel" aria-labelledby="headingFour">
+					<div class="panel-body">
+						<p class="description">The most frequently occurring genres, the average imdb rating
+								of their titles, and your average rating of those titles (if you
+								used your exported ratings).	</p>
+							<table class="statTable table">
+								<tr>
+									<th>Name</th>
+									<th>Count</th>
+									<th>Avg. title rating</th>
+									<th>Your title rating</th>
+								</tr>
+								<tr th:each="statRow : ${stats.genreStats}">
+									<td th:text="${statRow.name}">Name</td>
+									<td th:text="${statRow.nbOfOccurrences}">Count</td>
+									<td th:text="${statRow.ratingAvg} ? ${statRow.ratingAvg}">Rating</td>
+									<td th:text="${statRow.userRatingAvg} ? ${statRow.userRatingAvg}">User Rating</td>
 								</tr>
 							</table>									
 					</div>

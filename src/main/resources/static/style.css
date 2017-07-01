@@ -28,7 +28,7 @@ h1 {
 	width: 130px;
 }
 
-.personStats td, .personStats th {
+.statTable td, .statTable th {
 	padding: 5px 20px;
 	text-align: left;
 }
