@@ -25,6 +25,14 @@ import org.springframework.core.io.ClassPathResource;
 public abstract class Title {
 	private static final String BASE_URL = "http://www.imdb.com/title/";
 	
+	private static final String SAMPLE_RATINGS_FILE = "static/sample_ratings.csv";
+	
+	/**
+	 * At most this many sample ratings will be taken from {@code SAMPLE_RATINGS_FILE}
+	 * <br>Set to 0 to select all.
+	 */
+	private static final int N_SAMPLES_MAX = 100;
+	
 	/**
 	 * When a list of titles is passed to the web service, they can be separated by a number of characters; this regex string splits them apart.
 	 */
@@ -116,19 +124,30 @@ public abstract class Title {
 	public static List<Title> createTitlesFromSampleData() throws FileNotFoundException, IOException {
 		ArrayList<Title> titlesList = new ArrayList<Title>();
 
-		Reader in = new InputStreamReader(new ClassPathResource("static/sample_ratings_small.csv").getInputStream());
-		Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
+		Reader in = new InputStreamReader(new ClassPathResource(SAMPLE_RATINGS_FILE).getInputStream());
+		Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
+		
+		int titlesCreated = 0;
+		
 		for (CSVRecord record : records) {
+			if (titlesCreated >= N_SAMPLES_MAX && N_SAMPLES_MAX != 0) {
+		    	break;
+		    }
+			
 		    String id = record.get("const");
 		    String typeString = record.get("Title type");
-		    String userRating = record.get("You rated");
+		    String userRating = record.get("You rated");		    		    
 		    
-		    Document doc = Jsoup.connect(BASE_URL + id).get();
-		    Title t = createTitle(id, doc, typeString);
-		    t.userRating = Double.parseDouble(userRating);
-		    titlesList.add(t);
+		    if (id != null && !id.isEmpty() && typeString != null && !typeString.isEmpty()) {		    	
+		    	Document doc = Jsoup.connect(BASE_URL + id).get();
+			    Title t = createTitle(id, doc, typeString);
+			    t.userRating = Double.parseDouble(userRating);
+			    titlesList.add(t);
+			    titlesCreated++;
+		    }		    
 		}
-
+	
+		
 		return titlesList;
 	}
 	
@@ -343,7 +362,6 @@ public abstract class Title {
 	 */
 	private Double obtainRatingFromHtml() {
 		Double r = null;
-		// get rating
 		try {
 			r = Double.parseDouble(doc.select(".imdbRating span[itemprop=\"ratingValue\"]").first().text());
 		} catch (NumberFormatException e) {
