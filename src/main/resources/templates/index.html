@@ -14,24 +14,31 @@
 <body>
     <div class="instructions container" role="main">
 	   
-	    <h2>Generate movie statistics</h2>
-	    <p>Enter any number of movie/series titles or imdb ids:</p>
-	    <p>e.g. <br/>tt0118715
-				<br/>tt4093826
-				<br/>tt4108304</p>
+	    <h2>Generate IMDb statistics</h2>
+	    <h4>Look up titles</h4>
+	    <p>Enter any number of movie/series titles or imdb ids:</p>	
 	    
 	    <form action="/stats" method="get">
 		    <textarea class="form-control" rows="5" name="titles"></textarea>
 	    	<p><input type="submit" value="Go" /></p>
 	    </form> 
 	    
-	    <br/><br/>
-	    <p>Or use sample data (part of my own exported ratings):</p>
+	    <h4>Analyze exported IMDb ratings</h4>
+	    <p> Copy/paste part of exported IMDb ratings here (on IMDb, go to your ratings, 
+	    	then choose <em>Export this list</em> at the bottom).</p>
+	    <p>Note: data is scraped from IMDb synchronously, so this may not work if you provide too many ratings here. 
+	    I'll try to get around to looking them up asynchronously...</p>
+	    
+	    <form action="/exportedRatings" method="get">
+		    <textarea class="form-control" rows="5" name="exportedRatings"></textarea>
+	    	<p><input type="submit" value="Go" /></p>
+	    </form> 
+	    
+	    <h4>Use sample data</h4>
+	    <p>Use part of my own exported ratings:</p>
 	    <form action="/sample" method="get">
 	        <p><input type="submit" value="Go" /></p>
-	    </form> 
-    
-    	<p>Note: data is scraped from IMDb synchronously, so you may have to be patient if looking up a lot of titles.</p>
+	    </form>     
     </div>
     
 </body>

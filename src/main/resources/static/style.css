@@ -54,6 +54,10 @@ h1 {
 	width: 100%;	  
 }
 
+.instructions form {
+	padding-bottom: 30px;
+}
+
 #noResults {
 	padding-top: 100px;
 }

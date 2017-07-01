@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,12 +26,6 @@ import org.springframework.stereotype.Service;
 public class TitleLookupService {
 
 	private static final String SAMPLE_RATINGS_FILE = "static/sample_ratings.csv";
-
-	/**
-	 * At most this many sample ratings will be taken from {@code SAMPLE_RATINGS_FILE}
-	 * <br>Set to 0 to select all.
-	 */
-	private static final int N_SAMPLES_MAX = 10;
 	
 	/**
 	 * When a list of titles is passed to the web service, they can be separated by a number of characters; this regex string splits them apart.
@@ -86,39 +81,66 @@ public class TitleLookupService {
 	}
 	
 	/**
-	 * Create a list of Title objects of sample data (part of my own exported ratings).
-	 * @return A list of Title objects from sample data.
+	 * Create a list with Title objects for each entry in a set of exported IMDb ratings.
+	 * @param titles String containing any number of lines, each of which should hold a row of exported imdb-ratings. 
+	 * 	<br>(The first line can, but does not have to, hold the header)
+	 * @return A list of Title objects corresponding to those exported ratings.
+	 * @throws IOException If the indicated string does not contain valid csv data.
 	 */
-	public List<Title> createTitlesFromSampleData() throws FileNotFoundException, IOException {
-		ArrayList<Title> titlesList = new ArrayList<Title>();
-
-		Reader in = new InputStreamReader(new ClassPathResource(SAMPLE_RATINGS_FILE).getInputStream());
-		Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
-		
-		int titlesCreated = 0;
-		
-		for (CSVRecord record : records) {
-			if (titlesCreated >= N_SAMPLES_MAX && N_SAMPLES_MAX != 0) {
-		    	break;
-		    }
-			
-		    String id = record.get("const");
-		    String typeString = record.get("Title type");
-		    String userRating = record.get("You rated");		    		    
-		    
-		    if (id != null && !id.isEmpty() && typeString != null && !typeString.isEmpty()) {		    	
-		    	Document doc = Jsoup.connect(Title.BASE_URL + id).get();
-			    Title t = createTitle(id, doc, typeString);
-			    t.userRating = Double.parseDouble(userRating);
-			    titlesList.add(t);
-			    titlesCreated++;
-		    }		    
-		}
-	
-		
-		return titlesList;
+	public List<Title> createTitlesFromExportedRatings(String ratings) throws IOException {
+		Iterable<CSVRecord> records = CSVParser.parse(ratings, CSVFormat.DEFAULT);
+		return createTitlesFromCsv(records);
 	}
 	
+	/**
+	 * Create a list of Title objects of sample data (part of my own exported ratings).
+	 * @return A list of Title objects from sample data.
+	 * @throws IOException If the sample data could not be read for whatever reason.
+	 */
+	public List<Title> createTitlesFromSampleData() throws IOException {
+
+		Reader in = new InputStreamReader(new ClassPathResource(SAMPLE_RATINGS_FILE).getInputStream());
+		Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
+		
+		return createTitlesFromCsv(records);		
+	}
+	
+	private List<Title> createTitlesFromCsv(Iterable<CSVRecord> records) {
+		ArrayList<Title> titlesList = new ArrayList<Title>();
+		
+		for (CSVRecord record : records) {
+			if(record.get(0).equals("position")) {
+				continue; //skip header, is present
+			}
+			
+		    String id = record.get(1);
+		    String typeString = record.get(6);
+		    String userRating = record.get(8);		    		    
+		    Title t;
+		    
+		    if (id == null || id.isEmpty() || typeString == null || typeString.isEmpty()) {
+		    	System.err.println("invalid record found in exported ratings, with id " + id + " and type " + typeString + ", skipping");
+				continue;
+		    }
+
+		    Document doc;
+		    try {
+		    	doc = Jsoup.connect(Title.BASE_URL + id).get();
+		    	t = createTitle(id, doc, typeString);
+		    } catch (FileNotFoundException e) {
+		    	System.err.println("could not find imdb page for " + id + ", skipping");
+		    	continue;
+		    }	catch (IOException e) {
+		    	System.err.println("could not parse imdb page for " + id + ", skipping");
+		    	continue;
+		    }
+		    t.userRating = Double.parseDouble(userRating);
+		    titlesList.add(t);
+
+		}
+		return titlesList;
+	}
+
 	/**
 	 * Create a list with Title objects for each title or titleId in the indicated array
 	 * <br>Invalid IDs are skipped.

@@ -39,6 +39,7 @@ public class RequestController {
     	model.addAttribute("stats", new Statistics(titleLookupService.createTitlesFromSingleLineOfIds(ids)));	
         return "stats";
     }
+    
     /**
 	 * Redirect to a page with some statistics for all provided ids.
 	 * <br>The 'titles' parameter should contain a number of titles or titleIds, each on a separate line.
@@ -46,6 +47,16 @@ public class RequestController {
     @RequestMapping("/stats")
     public String requestStatsFromText(@RequestParam(value="titles") String titles, Model model) throws IOException {
     	model.addAttribute("stats", new Statistics(titleLookupService.createTitlesFromText(titles)));	
+        return "stats";
+    }
+    
+    /**
+	 * Redirect to a page with some statistics for all provided ids.
+	 * <br>The 'titles' parameter should contain a number of titles or titleIds, each on a separate line.
+	 */
+    @RequestMapping("/exportedRatings")
+    public String requestStatsFromExportedRatings(@RequestParam(value="exportedRatings") String exportedRatings, Model model) throws IOException {
+    	model.addAttribute("stats", new Statistics(titleLookupService.createTitlesFromExportedRatings(exportedRatings)));	
         return "stats";
     }
 
