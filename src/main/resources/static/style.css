@@ -23,6 +23,7 @@ h1 {
 
 .titleEntry th {
 	text-align: right;
+	vertical-align: top;
 	padding-right: 20px;
 }
 
@@ -54,4 +55,8 @@ h1 {
 
 #noResults {
 	padding-top: 100px;
+}
+
+.returnLink {
+	float: right;
 }

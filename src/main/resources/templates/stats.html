@@ -16,6 +16,7 @@
 	
 	<div th:if="${stats.nTitles != 0}">	
 		<h1>IMDb Stats</h1>
+		<a href="../" class="returnLink">Return</a>
 		<p id="basicInfo">
 			Analyzed <span th:text="${stats.nTitles}">number</span> titles,
 			containing <span th:text="${stats.nMovies}">number</span> movies, 
