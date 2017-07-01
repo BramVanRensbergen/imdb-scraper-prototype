@@ -2,7 +2,7 @@ package com.bramvanrensbergen.imdb_demo.stats;
 
 import java.util.List;
 
-import com.bramvanrensbergen.imdb_demo.data.Person;
+import com.bramvanrensbergen.imdb_demo.titel.Person;
 
 /**
  * Object representing statistics generated for a specific actor. Created in the Statistics class.

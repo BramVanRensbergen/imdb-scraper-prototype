@@ -1,4 +1,4 @@
-package com.bramvanrensbergen.imdb_demo.data;
+package com.bramvanrensbergen.imdb_demo.titel;
 
 import java.io.IOException;
 

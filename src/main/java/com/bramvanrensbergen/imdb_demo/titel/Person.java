@@ -1,4 +1,4 @@
-package com.bramvanrensbergen.imdb_demo.data;
+package com.bramvanrensbergen.imdb_demo.titel;
 
 /**
  * Object representing an actor or director/creator.

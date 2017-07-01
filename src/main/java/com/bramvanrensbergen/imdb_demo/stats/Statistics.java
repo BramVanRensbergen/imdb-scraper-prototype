@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.bramvanrensbergen.imdb_demo.data.Episode;
-import com.bramvanrensbergen.imdb_demo.data.Movie;
-import com.bramvanrensbergen.imdb_demo.data.Person;
-import com.bramvanrensbergen.imdb_demo.data.Series;
-import com.bramvanrensbergen.imdb_demo.data.Title;
+import com.bramvanrensbergen.imdb_demo.titel.Episode;
+import com.bramvanrensbergen.imdb_demo.titel.Movie;
+import com.bramvanrensbergen.imdb_demo.titel.Person;
+import com.bramvanrensbergen.imdb_demo.titel.Series;
+import com.bramvanrensbergen.imdb_demo.titel.Title;
 
 /**
  * Generate a number of basic stats for the indicated titles.
