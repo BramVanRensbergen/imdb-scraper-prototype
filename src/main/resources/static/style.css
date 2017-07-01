@@ -1,15 +1,11 @@
 body {
-	padding-left: 100px;
-	max-width: 40em !important;
+/* 	padding-left: 100px; */
+	padding-bottom: 30px;
+/* 	max-width: 40em; */
 }
-
 
 a {
-	color: #0079d3 !important;
-}
-
-.entry {
-	padding-bottom: 20px;
+	color: #0079d3;
 }
 
 h1 {
@@ -17,10 +13,30 @@ h1 {
 	padding-bottom: 5px;
 }
 
-.subtitle {
-	margin-top: 0px;
-	margin-bottom: 5px;
-	padding-top: 0px;	
+.container {
+	max-width: 60em;
+}
+
+.stats h3 {
+	padding-top: 20px;
+}
+
+.titleEntry th {
+	text-align: right;
+	padding-right: 20px;
+}
+
+.personStats td, .personStats th {
+	padding: 5px 20px;
+	text-align: left;
+}
+
+.titleEntry {
+	padding-bottom: 20px;
+}
+
+#basicInfo {
+	padding-bottom:20px;
 }
 
 .instructions h2 {
@@ -36,11 +52,6 @@ h1 {
 	width: 100%;	  
 }
 
-.stats td, .stats th {
-	padding: 5px 20px;
-	text-align: left;
-}
-
-.stats h3 {
-	padding-top: 20px;
+#noResults {
+	padding-top: 100px;
 }
