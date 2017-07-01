@@ -28,7 +28,9 @@ public abstract class Title {
 	/**
 	 * When a list of titles is passed to the web service, they can be separated by a number of characters; this regex string splits them apart.
 	 */
-	private static final String TITLE_SEPARATOR_REGEX = "%20| |\\+|,";
+	private static final String ID_SEPARATOR_REGEX = "%20| |\\+|,";
+	
+	private static final String NEWLINE_SEPARATOR_REGEX = "[\r\n]+";
 		
 	protected final String id;
 	
@@ -57,42 +59,23 @@ public abstract class Title {
 	private ArrayList<Person> primaryActors;
 
 	/**
-	 * Create a list with Title objects for each title-id in the indicated strings; titles can be separated by space, comma, plus, or '%20'.
-	 * @param title_ids A string of title-ids (format 'tt0090756')
-	 * @return List of Title objects corresponding to those ids.
-	 * @throws IOException If the title-id is not valid i.e. the corresponding imdb page cannot be found.
+	 * Create a list with Title objects for each titleId in the String; ids can be separated by space, comma, plus, or '%20'.
+	 * <br>Invalid IDs are skipped.
+	 * @param title_ids String containing any number of titleIds, separated by space, comma, plus, or '%20'.
+	 * @return A list of Title objects corresponding to those ids.
 	 */
-	public static List<Title> createTitles(String title_ids) throws IOException {
-		ArrayList<Title> titlesList = new ArrayList<Title>();
-		
-		Set<String> alreadyAddedTitles = new HashSet<String>();
-		
-		String[] titleIds = title_ids.split(TITLE_SEPARATOR_REGEX);
-		
-		for (String id : titleIds) {
-			
-			// make sure to avoid any duplicates
-			if (alreadyAddedTitles.contains(id)) {
-				continue;
-			}
-			alreadyAddedTitles.add(id);
-			
-			Document doc = Jsoup.connect(BASE_URL + id).get();
-			Element e = doc.select(".titleBar .subtext a:last-child").first();
-			
-			if (e == null) {
-				System.err.println("Could not obtain type of title for " + id + ", skipping");
-				continue;
-			}
-			
-			String titleTypeDesc = e.text();			
-			titlesList.add(createTitle(id, doc, titleTypeDesc));
-		}
-		
-		return titlesList;
+	public static List<Title> createTitlesFromSingleLineOfIds(String title_ids) {
+		return createTitles(title_ids.split(ID_SEPARATOR_REGEX));
 	}
 	
-	
+	/**
+	 * Create a list with Title objects for each line containing a valid title or titleId in the indicated String.
+	 * @param titles String containing any number of lines, each of which should hold a single title or titleId.
+	 * @return A list of Title objects corresponding to those titles or ids.
+	 */
+	public static List<Title> createTitlesFromText(String titles) {
+		return createTitles(titles.split(NEWLINE_SEPARATOR_REGEX));
+	}
 	
 	public static List<Title> createTitlesFromSampleData() throws FileNotFoundException, IOException {
 		ArrayList<Title> titlesList = new ArrayList<Title>();
@@ -110,6 +93,46 @@ public abstract class Title {
 		    titlesList.add(t);
 		}
 
+		return titlesList;
+	}
+	
+	/**
+	 * Create a list with Title objects for each title or titleId in the indicated array
+	 * <br>Invalid IDs are skipped.
+	 * @param titles An array of titles or titleIds
+	 * @return List of Title objects corresponding to those ids.
+	 */
+	private static List<Title> createTitles(String[] titles) {
+		ArrayList<Title> titlesList = new ArrayList<Title>();
+		
+		Set<String> alreadyAddedTitles = new HashSet<String>();				
+		
+		for (String id : titles) {
+			
+			
+			try {
+				// make sure to avoid any duplicates
+				if (alreadyAddedTitles.contains(id)) {
+					continue;
+				}
+				alreadyAddedTitles.add(id);
+				
+				Document doc = Jsoup.connect(BASE_URL + id).get();
+				Element e = doc.select(".titleBar .subtext a:last-child").first();
+				
+				if (e == null) {
+					System.err.println("Could not obtain type of title for " + id + ", skipping");
+					continue;
+				}
+				
+				String titleTypeDesc = e.text();			
+				titlesList.add(createTitle(id, doc, titleTypeDesc));
+			} catch (IOException e) {
+				System.err.println("Could not obtain find imdb page for " + id + ", skipping");
+			}
+			
+		}
+		
 		return titlesList;
 	}
 	

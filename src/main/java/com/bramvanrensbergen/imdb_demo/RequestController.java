@@ -1,6 +1,7 @@
 package com.bramvanrensbergen.imdb_demo;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,46 +16,40 @@ import com.bramvanrensbergen.imdb_demo.stats.Statistics;
 public class RequestController {
 
 	/**
-	 * Redirect to a page with some basic info for all provided ids.
+	 * Redirect to a page with some statistics for all provided ids.
+	 * <br>URL should contain list of ids, separated by space, comma, plus, or '%20'. 
+	 */
+    @RequestMapping("/")
+    public String showIndex() throws IOException {      	
+        return "index";
+    }
+	
+	/**
+	 * Redirect to a page with some statistics for all provided ids.
+	 * <br>URL should contain list of ids, separated by space, comma, plus, or '%20'. 
 	 */
     @RequestMapping("/title/{ids}")
-    public String requestInfo(@PathVariable("ids") String ids, Model model) throws IOException {  		
-		model.addAttribute("titles", Title.createTitles(ids));			
-        return "titles";
-    }
-    
-	/**
-	 * Redirect to a page with some basic info for all provided ids.
-	 */
-    @RequestMapping("/title")
-    public String requestInfoGet(@RequestParam(value="ids") String ids, Model model) throws IOException {
-		model.addAttribute("titles", Title.createTitles(ids));	
-        return "titles";
-    }
-
-	/**
-	 * Redirect to a page with some statistics for all provided ids.
-	 */
-    @RequestMapping("/stats/{ids}")
-    public String requestStats(@PathVariable("ids") String ids, Model model) throws IOException {       
-    	Statistics stats = new Statistics(Title.createTitles(ids));
+    public String requestStatsFromUrl(@PathVariable("ids") String ids, Model model) throws IOException {  		
+    	List<Title> titles = Title.createTitlesFromSingleLineOfIds(ids);
+    	Statistics stats = new Statistics(titles);
     	model.addAttribute("stats", stats);	
+    	model.addAttribute("titles", titles);	
         return "stats";
     }
-    
     /**
 	 * Redirect to a page with some statistics for all provided ids.
+	 * <br>The 'titles' parameter should contain a number of titles or titleIds, each on a separate line.
 	 */
     @RequestMapping("/stats")
-    public String requestStatsGet(@RequestParam(value="ids") String ids, Model model) throws IOException {
-    	Statistics stats = new Statistics(Title.createTitles(ids));
+    public String requestStatsFromText(@RequestParam(value="titles") String titles, Model model) throws IOException {
+    	List<Title> titleList = Title.createTitlesFromText(titles);    	
+    	Statistics stats = new Statistics(titleList);
     	model.addAttribute("stats", stats);	
+    	model.addAttribute("titles", titleList);	
         return "stats";
+//        return "redirect:/";
     }
-    
-	/**
-	 * Redirect to a page with some statistics for all provided ids.
-	 */
+
     @RequestMapping("/sample")
     public String requestSampleStats(Model model) throws IOException { 
     	Statistics stats = new Statistics(Title.createTitlesFromSampleData());
