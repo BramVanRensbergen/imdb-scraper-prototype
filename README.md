@@ -6,10 +6,10 @@ A small tool I created to gain some experience with the Java Spring framework.
 
 It allows you to enter any number of titles of movies, tv-series, or episodes,
 and looks up some data for these titles:
-	-Basic metadata for each title
-	-Which actors were cast most often in these titles and what the average rating of the titles in which they were cast is
-	-Which directors directed most often in these titles and what the average rating of the titles in which they directed is
-	-Which genres occurred most often among these titles and with what average rating
+	- Basic metadata for each title
+	- Which actors were cast most often in these titles and what the average rating of the titles in which they were cast is
+	- Which directors directed most often in these titles and what the average rating of the titles in which they directed is
+	- Which genres occurred most often among these titles and with what average rating
 	
 You can do also input exported IMDb ratings, in which case your own rating and average rating is included in the statistics.
 
