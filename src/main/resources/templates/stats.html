@@ -101,9 +101,8 @@
 								<td><a th:href="${personStat.actor.url}" th:text="${personStat.actor.name}" target="_BLANK">
 									Actors</a></td>
 								<td th:text="${personStat.nbOfOccurrences}">Count</td>
-								<td th:text="${personStat.ratingAvg}">Rating</td>
-								<td th:text="${personStat.userRatingAvg != '-1.00'} ? ${personStat.userRatingAvg}">User
-									Rating</td>
+								<td th:text="${personStat.ratingAvg} ? ${personStat.ratingAvg}">Rating</td>
+								<td th:text="${personStat.userRatingAvg} ? ${personStat.userRatingAvg}">User Rating</td>
 							</tr>
 						</table>		
 					</div>
@@ -135,9 +134,8 @@
 									<td><a th:href="${personStat.actor.url}"
 										th:text="${personStat.actor.name}" target="_BLANK">Actors</a></td>
 									<td th:text="${personStat.nbOfOccurrences}">Count</td>
-									<td th:text="${personStat.ratingAvg}">Rating</td>
-									<td th:text="${personStat.userRatingAvg != '-1.00'} ? ${personStat.userRatingAvg}">User
-										Rating</td>
+									<td th:text="${personStat.ratingAvg} ? ${personStat.ratingAvg}">Rating</td>
+									<td th:text="${personStat.userRatingAvg} ? ${personStat.userRatingAvg}">User Rating</td>
 								</tr>
 							</table>									
 					</div>

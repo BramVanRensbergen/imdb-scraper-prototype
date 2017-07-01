@@ -48,7 +48,7 @@ public abstract class Title {
 	
 	private String summaryText;
 		
-	private Integer userRating = -1;
+	private Double userRating = null;
 
 	/**
 	 * The director(s) (for episodes and movies) or creator(s) (for series) of the current title.
@@ -58,6 +58,42 @@ public abstract class Title {
 	// currently max. 15
 	private ArrayList<Person> primaryActors;
 
+	/**
+	 * Get the imdb id contained in the indicated url.
+	 * @param url containing a title's id, e.g. /title/tt0000186?ref_=tt_ov_dr
+	 * @return the id, e.g. tt0000186
+	 */
+	public static String getIdFromUrl(String url) {
+		return url.split("/title/")[1].split("\\?")[0];
+	}
+	
+	/**
+	 * Get the imdb-id of the best match (accordign to IMDb) for the indicated title.
+	 * @param title Title of a movie/episode/series to look up
+	 * @return IMDb id of the first match for that title (null if no match could be found)
+	 */
+	public static String getBestMatchForTitle(String title) {		
+		if (title == null) {
+			return null;
+		}
+		
+		String id = null;
+		
+		String url = "http://www.imdb.com/find?q=" + title.trim() + "&s=tt";		
+		
+		try {			
+			Document doc = Jsoup.connect(url).get();
+			Element e = doc.select(".findList a").first();
+			id = getIdFromUrl(e.attr("href"));
+		} catch (IOException e) {
+			System.err.println("Could not reach imdb page at " + url);
+		} catch (NullPointerException e) {
+			System.err.println("Could not find any results at " + url);
+		}
+	
+		return id;
+	}
+	
 	/**
 	 * Create a list with Title objects for each titleId in the String; ids can be separated by space, comma, plus, or '%20'.
 	 * <br>Invalid IDs are skipped.
@@ -89,7 +125,7 @@ public abstract class Title {
 		    
 		    Document doc = Jsoup.connect(BASE_URL + id).get();
 		    Title t = createTitle(id, doc, typeString);
-		    t.userRating = Integer.parseInt(userRating);
+		    t.userRating = Double.parseDouble(userRating);
 		    titlesList.add(t);
 		}
 
@@ -99,20 +135,38 @@ public abstract class Title {
 	/**
 	 * Create a list with Title objects for each title or titleId in the indicated array
 	 * <br>Invalid IDs are skipped.
-	 * @param titles An array of titles or titleIds
+	 * @param titlesOrIds An array of titles or titleIds
 	 * @return List of Title objects corresponding to those ids.
 	 */
-	private static List<Title> createTitles(String[] titles) {
+	private static List<Title> createTitles(String[] titlesOrIds) {
 		ArrayList<Title> titlesList = new ArrayList<Title>();
 		
 		Set<String> alreadyAddedTitles = new HashSet<String>();				
 		
-		for (String id : titles) {
-			
-			
+		for (String titleOrId : titlesOrIds) {			
 			try {
+				if (titleOrId == null) {
+					System.out.println("null title/id passed '" + titleOrId + "', skipping");
+					continue;
+				}
+				
+				// to continue, we need the imdb id, which we have to look up in case titleOrId reflects a title
+				String id;				
+				if (titleOrId.startsWith("tt")) {
+					id = titleOrId;
+				} else {
+					id = getBestMatchForTitle(titleOrId);
+				}
+				
+				if (id == null) {
+					System.out.println("no valid id found for title '" + titleOrId + "', skipping");
+					continue;
+				}
+				
+				
 				// make sure to avoid any duplicates
 				if (alreadyAddedTitles.contains(id)) {
+					System.out.println("skipping duplicate " + id);
 					continue;
 				}
 				alreadyAddedTitles.add(id);
@@ -128,21 +182,12 @@ public abstract class Title {
 				String titleTypeDesc = e.text();			
 				titlesList.add(createTitle(id, doc, titleTypeDesc));
 			} catch (IOException e) {
-				System.err.println("Could not obtain find imdb page for " + id + ", skipping");
+				System.err.println("Could not obtain find imdb page for '" + titleOrId + "', skipping");
 			}
 			
 		}
 		
 		return titlesList;
-	}
-	
-	/**
-	 * Get the imdb id contained in the indicated url.
-	 * @param url containing a title's id, e.g. /name/tt0000186?ref_=tt_ov_dr
-	 * @return the id, e.g. tt0000186
-	 */
-	public static String getIdFromUrl(String url) {
-		return url.split("/title/")[1].split("\\?")[0];
 	}
 	
 	private static Title createTitle(String id, Document doc, String titleTypeDescription) throws IOException {
@@ -179,7 +224,7 @@ public abstract class Title {
 		this.summaryText = obtainSummaryTextFromHtml();
 	}		
 	
-	protected Title(String id, Document doc, int userRating) throws IOException {
+	protected Title(String id, Document doc, double userRating) throws IOException {
 		this(id, doc);
 		this.userRating = userRating;
 	}
@@ -217,7 +262,7 @@ public abstract class Title {
 	}
 
 	/**
-	 * @return IMDb rating (out of 10) of the current title.
+	 * @return IMDb rating (out of 10) of the current title, or null if no rating was found.
 	 */
 	public Double getRating() {
 		return rating;
@@ -231,9 +276,10 @@ public abstract class Title {
 	}
 
 	/**
-	 * @return The current user's rating of the title; only used when analyzing exported ratings.
+	 * @return The current user's rating of the title; only used when analyzing exported ratings;
+	 * or null, if no such rating could be found.
 	 */
-	public double getUserRating() {
+	public Double getUserRating() {
 		return userRating;
 	}
 

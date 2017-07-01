@@ -19,8 +19,8 @@ import com.bramvanrensbergen.imdb_demo.data.Title;
  */
 public class Statistics {
 
-	private static final int ACTORS_TO_DISPLAY = 20;
-	private static final int DIRECTORS_TO_DISPLAY = 10;
+	private static final int ACTORS_TO_DISPLAY = 50;
+	private static final int DIRECTORS_TO_DISPLAY = 20;
 
 
 	private List<PersonStatRow> actorStats;
@@ -31,7 +31,7 @@ public class Statistics {
 	private int nMovies = 0;
 	private int nEpisodes = 0;
 	private int nSeries = 0;
-	
+		
 	/**
 	 * Generate a set of statistics for the indicated titles.
 	 */
@@ -60,8 +60,8 @@ public class Statistics {
 				}
 
 				actorStatsMap.get(key).nbOfOccurrences++;
-				actorStatsMap.get(key).ratingSum += t.getRating();				
-				actorStatsMap.get(key).userRatingSum += t.getUserRating();
+				actorStatsMap.get(key).incrementRatingSum(t.getRating());				
+				actorStatsMap.get(key).incrementUserRatingSum(t.getUserRating());				
 			}		
 
 			// actor stats
@@ -73,8 +73,8 @@ public class Statistics {
 				}
 
 				directorStatsMap.get(key).nbOfOccurrences++;
-				directorStatsMap.get(key).ratingSum += t.getRating();				
-				directorStatsMap.get(key).userRatingSum += t.getUserRating();
+				directorStatsMap.get(key).incrementRatingSum(t.getRating());				
+				directorStatsMap.get(key).incrementUserRatingSum(t.getUserRating());	
 			}	 
 		}
 
@@ -100,6 +100,9 @@ public class Statistics {
 	 * @return Stats for the {@code ACTORS_TO_DISPLAY} that were cast most often in the indicated titles.
 	 */
 	public List<PersonStatRow> getActorStats() {
+		if (actorStats.size() <= ACTORS_TO_DISPLAY) {
+			return actorStats;
+		}
 		return actorStats.subList(0, ACTORS_TO_DISPLAY);
 	}
 	

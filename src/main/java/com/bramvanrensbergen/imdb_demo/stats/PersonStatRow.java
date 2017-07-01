@@ -14,8 +14,11 @@ public class PersonStatRow {
 	protected int nbOfOccurrences = 0;
 	protected double ratingSum = 0;
 	protected int userRatingSum = 0;
-	protected double ratingAvg;
-	protected double userRatingAvg; 
+	protected Double ratingAvg;
+	protected Double userRatingAvg; 
+	
+	// unreleased titles have no ratings, so we need a separate count to obtain accurate averages
+	protected int nbOfOccurrencesWithRatings = 0;
 	
 	public PersonStatRow(Person actor) {
 		this.actor = actor;
@@ -41,18 +44,50 @@ public class PersonStatRow {
 		return userRatingSum;
 	}
 
-	public String getRatingAvg() {
+	/**
+	 * @return The average idmb-rating of all analyzed titles in which this person was cast, 
+	 * or null if no ratings were found.
+	 */
+	public String getRatingAvg() {		
+		if (ratingAvg == null) {
+			return null;
+		}
 		return String.format( "%.2f", ratingAvg);
 	}
 
+	/**
+	 * @return The average rating of the current use of all analyzed titles in which this person was cast, 
+	 * or null if no ratings were found.
+	 */
 	public String getUserRatingAvg() {
+		if (userRatingAvg == null || userRatingAvg == 0) {
+			return null;
+		}
 		return String.format( "%.2f", userRatingAvg);
+	}
+	
+	/**
+	 * Increment the running total (or do nothing, if increment is null).
+	 */
+	protected void incrementRatingSum(Double increment) {
+		if (increment != null) {
+			ratingSum += increment;
+			nbOfOccurrencesWithRatings++;			
+		}
+	}
+	
+	protected void incrementUserRatingSum(Double increment) {
+		if (increment != null) {
+			userRatingSum += increment;
+		}
 	}
 	
 	protected static void calculateAndSetAllAverages(List<PersonStatRow> stats) {
 		for (PersonStatRow p : stats) {
-			p.ratingAvg = (double) p.ratingSum / p.nbOfOccurrences;
-			p.userRatingAvg = (double) p.userRatingSum / p.nbOfOccurrences;			
+			if (p.nbOfOccurrencesWithRatings > 0) {
+				p.ratingAvg = (double) p.ratingSum / p.nbOfOccurrencesWithRatings;
+				p.userRatingAvg = (double) p.userRatingSum / p.nbOfOccurrencesWithRatings;				
+			} 
 		}
 	}
 }
