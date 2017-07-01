@@ -25,6 +25,7 @@ h1 {
 	text-align: right;
 	vertical-align: top;
 	padding-right: 20px;
+	width: 130px;
 }
 
 .personStats td, .personStats th {
