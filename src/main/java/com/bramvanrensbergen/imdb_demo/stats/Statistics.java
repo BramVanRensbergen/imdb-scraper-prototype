@@ -65,8 +65,9 @@ public class Statistics {
 				}
 
 				actorStatsMap.get(key).nbOfOccurrences++;
-				actorStatsMap.get(key).incrementRatingSum(t.getRating());				
-				actorStatsMap.get(key).incrementUserRatingSum(t.getUserRating());				
+				actorStatsMap.get(key).addRating(t.getRating());				
+				actorStatsMap.get(key).addUserRating(t.getUserRating());	
+				actorStatsMap.get(key).addRuntime(t.getRuntimeString());
 			}		
 
 			// director stats
@@ -78,8 +79,9 @@ public class Statistics {
 				}
 
 				directorStatsMap.get(key).nbOfOccurrences++;
-				directorStatsMap.get(key).incrementRatingSum(t.getRating());				
-				directorStatsMap.get(key).incrementUserRatingSum(t.getUserRating());	
+				directorStatsMap.get(key).addRating(t.getRating());				
+				directorStatsMap.get(key).addUserRating(t.getUserRating());	
+				directorStatsMap.get(key).addRuntime(t.getRuntimeString());
 			}	 
 			
 			// genres stats
@@ -90,8 +92,9 @@ public class Statistics {
 				}
 
 				genreStatsMap.get(g).nbOfOccurrences++;
-				genreStatsMap.get(g).incrementRatingSum(t.getRating());				
-				genreStatsMap.get(g).incrementUserRatingSum(t.getUserRating());							
+				genreStatsMap.get(g).addRating(t.getRating());				
+				genreStatsMap.get(g).addUserRating(t.getUserRating());			
+				genreStatsMap.get(g).addRuntime(t.getRuntimeString());
 			}
 		}
 
@@ -103,10 +106,6 @@ public class Statistics {
 		Collections.sort(actorStats);
 		Collections.sort(directorStats);
 		Collections.sort(genreStats);
-		
-		StatRow.calculateAndSetAllAverages(actorStats);
-		StatRow.calculateAndSetAllAverages(directorStats);	
-		StatRow.calculateAndSetAllAverages(genreStats);	
 	}
 
 	/**

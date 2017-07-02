@@ -51,6 +51,10 @@
 										<td	th:text="${title.userRating}">Your Rating</td>
 									</tr>
 									<tr>
+										<th>Runtime</th>
+										<td th:text="${title.runtimeString} ? ${title.runtimeString} : 'Not found :('">Genres</td>
+									</tr>
+									<tr>
 										<th>Genres</th>
 										<td th:text="${title.genres} ? ${title.genres} : 'Not found :('">Genres</td>
 									</tr>
@@ -102,6 +106,7 @@
 								<th>Count</th>
 								<th>Avg. title rating</th>
 								<th>Your title rating</th>
+								<th>Avg. runtime</th>
 							</tr>
 							<tr th:each="statRow : ${stats.actorStats}">
 								<td><a th:href="${statRow.url}" th:text="${statRow.name}" target="_BLANK">
@@ -109,6 +114,7 @@
 								<td th:text="${statRow.nbOfOccurrences}">Count</td>
 								<td th:text="${statRow.ratingAvg} ? ${statRow.ratingAvg}">Rating</td>
 								<td th:text="${statRow.userRatingAvg} ? ${statRow.userRatingAvg}">User Rating</td>
+								<td th:text="${statRow.runtimeAvg} ? ${statRow.runtimeAvg}">Runtime</td>
 							</tr>
 						</table>		
 					</div>
@@ -135,6 +141,7 @@
 									<th>Count</th>
 									<th>Avg. title rating</th>
 									<th>Your title rating</th>
+									<th>Avg. runtime</th>
 								</tr>
 								<tr th:each="statRow : ${stats.directorStats}">
 									<td><a th:href="${statRow.url}"
@@ -142,6 +149,7 @@
 									<td th:text="${statRow.nbOfOccurrences}">Count</td>
 									<td th:text="${statRow.ratingAvg} ? ${statRow.ratingAvg}">Rating</td>
 									<td th:text="${statRow.userRatingAvg} ? ${statRow.userRatingAvg}">User Rating</td>
+									<td th:text="${statRow.runtimeAvg} ? ${statRow.runtimeAvg}">Runtime</td>									
 								</tr>
 							</table>									
 					</div>
@@ -166,12 +174,14 @@
 									<th>Count</th>
 									<th>Avg. title rating</th>
 									<th>Your title rating</th>
+									<th>Avg. runtime</th>
 								</tr>
 								<tr th:each="statRow : ${stats.genreStats}">
 									<td th:text="${statRow.name}">Name</td>
 									<td th:text="${statRow.nbOfOccurrences}">Count</td>
 									<td th:text="${statRow.ratingAvg} ? ${statRow.ratingAvg}">Rating</td>
 									<td th:text="${statRow.userRatingAvg} ? ${statRow.userRatingAvg}">User Rating</td>
+									<td th:text="${statRow.runtimeAvg} ? ${statRow.runtimeAvg}">Runtime</td>	
 								</tr>
 							</table>									
 					</div>

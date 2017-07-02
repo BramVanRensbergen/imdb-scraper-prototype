@@ -1,5 +1,6 @@
 package com.bramvanrensbergen.imdb_demo.stats;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,30 +16,24 @@ public class StatRow implements Comparable<StatRow>{
 	protected String url;
 	
 	protected int nbOfOccurrences;
-	protected double ratingSum;
-	protected int userRatingSum;
-	protected Double ratingAvg;
-	protected Double userRatingAvg; 
 	
-	// unreleased titles have no ratings, so we need a separate count to obtain accurate averages
-	protected int nbOfOccurrencesWithRatings = 0;
-	
+	private List<Double> ratings;
+	private List<Double> userRatings;
+	private List<Integer> runtimesInMinutes;
+		
 	public StatRow(String name) {		
 		this.name = name;
 		
 		url = null;
 		nbOfOccurrences = 0;
-		ratingSum = 0;
-		userRatingSum = 0;
+		ratings = new ArrayList<Double>();
+		userRatings = new ArrayList<Double>();
+		runtimesInMinutes = new ArrayList<Integer>();
 	}
 	
 	public StatRow(String name, String url) {		
-		this.name = name;
+		this(name);
 		this.url = url;
-
-		nbOfOccurrences = 0;
-		ratingSum = 0;
-		userRatingSum = 0;
 	}
 
 	public String getName() {
@@ -53,63 +48,140 @@ public class StatRow implements Comparable<StatRow>{
 		return nbOfOccurrences;
 	}
 
-	public double getRatingSum() {
-		return ratingSum;
-	}
-
-	public int getUserRatingSum() {
-		return userRatingSum;
-	}
-
 	/**
 	 * @return The average idmb-rating of all analyzed titles in which this entity occurred (e.g. person was cast), 
 	 * or null if no ratings were found. 
 	 */
-	public String getRatingAvg() {		
-		if (ratingAvg == null) {
+	public String getRatingAvg() {
+		Double avg = computeAvgOfDoubleList(ratings);
+		
+		if (avg == null) {
 			return null;
 		}
-		return String.format( "%.2f", ratingAvg);
+		
+		return String.format( "%.2f", avg);
 	}
 
 	/**
-	 * @return The average rating of the current use of all analyzed titles in which this entity occurred (e.g. person was cast), 
+	 * @return The average rating of the current user of all analyzed titles in which this entity occurred (e.g. person was cast), 
 	 * or null if no ratings were found.
 	 */
 	public String getUserRatingAvg() {
-		if (userRatingAvg == null || userRatingAvg == 0) {
+		Double avg = computeAvgOfDoubleList(userRatings);
+		
+		if (avg == null) {
 			return null;
 		}
-		return String.format( "%.2f", userRatingAvg);
+		
+		return String.format( "%.2f", avg);
 	}
 	
 	/**
-	 * Increment the running total (or do nothing, if increment is null).
+	 * @return The average runtime of all analyzed titles in which this entity occurred (e.g. person was cast), 
+	 * in the format '1h 55min', '30min', or '2h'; or null if no runtimes were found.
 	 */
-	protected void incrementRatingSum(Double increment) {
+	public String getRuntimeAvg() {
+		Integer minuteAvg = computeAvgOfIntegerList(runtimesInMinutes);
+		
+		if (minuteAvg == null) {
+			return null;
+		}
+		
+		if (minuteAvg < 60) {
+			return minuteAvg + "min";
+		}
+		
+		int hours = minuteAvg / 60;
+		int minutesLeft = minuteAvg - hours * 60;
+		
+		if (minutesLeft > 0) {
+			return hours + "h " + minutesLeft + "min"; 
+		} else {
+			return hours + "h";
+		}		
+	}
+	
+	/**
+	 * Add the indicated rating to the list of ratings for this row (or do nothing, if increment is null).
+	 */
+	protected void addRating(Double increment) {
 		if (increment != null) {
-			ratingSum += increment;
-			nbOfOccurrencesWithRatings++;			
+			ratings.add(increment);			
 		}
 	}
 	
-	protected void incrementUserRatingSum(Double increment) {
+	/**
+	 * Add the indicated user rating to the list of ratings for this row (or do nothing, if increment is null).
+	 */
+	protected void addUserRating(Double increment) {
 		if (increment != null) {
-			userRatingSum += increment;
+			userRatings.add(increment);	
 		}
 	}
-	
-	protected static void calculateAndSetAllAverages(List<StatRow> stats) {
-		for (StatRow p : stats) {
-			if (p.nbOfOccurrencesWithRatings > 0) {
-				p.ratingAvg = (double) p.ratingSum / p.nbOfOccurrencesWithRatings;
-				p.userRatingAvg = (double) p.userRatingSum / p.nbOfOccurrencesWithRatings;				
-			} 
+
+	/**
+	 * Add the indicated runtime to the list of runtimes for this row (or do nothing, if param is null or cannot be parsed).
+	 * @param runtimeString in the format '1h 55min', '30min', or '2h' (no other units are used on idmb)
+	 */
+	protected void addRuntime(String runtimeString) {		
+		int rt = 0;
+		
+		if (runtimeString != null) {
+			
+			int hourIndex = runtimeString.indexOf('h');		
+			if (hourIndex != -1) {
+				int hours = Integer.parseInt(runtimeString.substring(0, hourIndex));
+				rt = hours * 60;				
+			}			
+			
+			// if two-part runtime i.e. if both hour and mins are present, strip hours
+			if (hourIndex != -1 && runtimeString.indexOf("min") != -1) {
+				runtimeString = runtimeString.substring(hourIndex + 2, runtimeString.length());
+				// + 2: include the 'h' as well as the space
+			}
+			
+			int minuteIndex = runtimeString.indexOf("min");		
+			if (minuteIndex != -1) {				
+				int minutes = Integer.parseInt(runtimeString.substring(0, minuteIndex));
+				rt += minutes;				
+			}				
 		}
+		
+		runtimesInMinutes.add(rt);	
 	}
 
 	@Override
 	public int compareTo(StatRow o) {
 		return o.nbOfOccurrences - nbOfOccurrences;
+	}
+	
+	/**
+	 * @return average of list, or null, if list is empty
+	 */
+	private Double computeAvgOfDoubleList(List<Double> numbers) {
+		if (numbers.isEmpty()) {
+			return null;
+		}
+		
+		double count = 0;
+		for (Double n : numbers) {
+			count = count + n.doubleValue();
+		}
+		return (double) count / numbers.size();
+	}
+	
+	/**
+	 * @return average of list, rounded to the nearest integer, or null, if list is empty
+	 */
+	private Integer computeAvgOfIntegerList(List<Integer> numbers) {
+		if (numbers.isEmpty()) {
+			return null;
+		}
+		
+		int count = 0;
+		for (int n : numbers) {
+			count += n;
+		}
+		return (int) count / numbers.size();
 	}
 }

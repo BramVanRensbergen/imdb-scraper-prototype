@@ -20,7 +20,7 @@ public abstract class Title {
 	protected final String id;
 	
 	protected Document doc;	
-	
+		
 	private String url;
 	
 	private String title;
@@ -31,9 +31,11 @@ public abstract class Title {
 		
 	private Double rating;	
 	
-	private String summaryText;
-		
 	Double userRating = null;
+	
+	private String summaryText;
+	
+	private String runtimeString;		
 
 	/**
 	 * The director(s) (for episodes and movies) or creator(s) (for series) of the current title.
@@ -51,11 +53,7 @@ public abstract class Title {
 	public static String getIdFromUrl(String url) {
 		return url.split("/title/")[1].split("\\?")[0];
 	}
-	
-	
-	
-
-		
+			
 	protected Title(String id, Document doc) throws IOException {
 		if (id == null || id.isEmpty()) {
 			throw new IllegalArgumentException("No valid id provided, please provide it in the format 'tt0090756'.");
@@ -70,6 +68,7 @@ public abstract class Title {
 		this.primaryActors = obtainPrimaryActorsFromHtml();
 		this.directorsOrCreators = obtainDirectorOrCreatorsFromHtml();
 		this.summaryText = obtainSummaryTextFromHtml();
+		this.runtimeString = obtainRuntimeFromHtml();
 	}		
 	
 	protected Title(String id, Document doc, double userRating) throws IOException {
@@ -121,6 +120,10 @@ public abstract class Title {
 	 */
 	public String getSummaryText() {
 		return summaryText;
+	}
+
+	public String getRuntimeString() {
+		return runtimeString;
 	}
 
 	/**
@@ -246,5 +249,18 @@ public abstract class Title {
 	 */
 	private String obtainSummaryTextFromHtml() {
 		return doc.select(".summary_text").first().text();			
+	}
+	
+	/**
+	 * Look up the runtime (String, as found on IMDb).
+	 */
+	private String obtainRuntimeFromHtml() {
+		String rt = null;
+		try {
+			rt = doc.select(".subtext time[itemprop=\"duration\"]").first().text();
+		}  catch (NullPointerException e) {
+			System.err.println("Could not set runtime for " + id + " (could not find element)");
+		}
+		return rt;		
 	}
 }
