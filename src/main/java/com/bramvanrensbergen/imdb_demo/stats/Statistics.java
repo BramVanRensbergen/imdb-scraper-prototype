@@ -23,29 +23,42 @@ public class Statistics {
 
 	private List<Title> analyzedTitles;
 	
+	/**
+	 * Stats for all titles together.
+	 */	
+	private StatRow globalStats;
+	
+	/**
+	 * Stats per actor.
+	 */
 	private List<StatRow> actorStats;
 	
+	/**
+	 * Stats per director.
+	 */
 	private List<StatRow> directorStats;
 	
+	/**
+	 * Stats per genre.
+	 */
 	private List<StatRow> genreStats;	
-		
-	private int nTitles;
+	
 	private int nMovies = 0;
 	private int nEpisodes = 0;
-	private int nSeries = 0;
-		
+	private int nSeries = 0;			
+	
 	/**
 	 * Generate a set of statistics for the indicated titles.
 	 */
 	public Statistics(List<Title> titles) {	 
 		analyzedTitles = titles;
 		
-		nTitles = titles.size();
 		
+		globalStats = new StatRow();
 		Map<String, StatRow> actorStatsMap = new HashMap<String, StatRow>();
 		Map<String, StatRow> directorStatsMap = new HashMap<String, StatRow>();
 		Map<String, StatRow> genreStatsMap = new HashMap<String, StatRow>();
-				
+			
 		for (Title t : titles) {
 			
 			if (t instanceof Movie) {
@@ -56,6 +69,8 @@ public class Statistics {
 				nSeries++;
 			} 
 			
+			globalStats.addTitle(t);
+						
 			// actor stats
 			for (Person p : t.getPrimaryActors()) {
 				String key = p.getId();
@@ -64,10 +79,7 @@ public class Statistics {
 					actorStatsMap.put(key, new StatRow(p.getName(), p.getUrl()));
 				}
 
-				actorStatsMap.get(key).nbOfOccurrences++;
-				actorStatsMap.get(key).addRating(t.getRating());				
-				actorStatsMap.get(key).addUserRating(t.getUserRating());	
-				actorStatsMap.get(key).addRuntime(t.getRuntimeString());
+				actorStatsMap.get(key).addTitle(t);
 			}		
 
 			// director stats
@@ -78,10 +90,7 @@ public class Statistics {
 					directorStatsMap.put(key, new StatRow(p.getName(), p.getUrl()));
 				}
 
-				directorStatsMap.get(key).nbOfOccurrences++;
-				directorStatsMap.get(key).addRating(t.getRating());				
-				directorStatsMap.get(key).addUserRating(t.getUserRating());	
-				directorStatsMap.get(key).addRuntime(t.getRuntimeString());
+				directorStatsMap.get(key).addTitle(t);
 			}	 
 			
 			// genres stats
@@ -90,11 +99,8 @@ public class Statistics {
 				if (!genreStatsMap.containsKey(g)) {
 					genreStatsMap.put(g, new StatRow(g));
 				}
-
-				genreStatsMap.get(g).nbOfOccurrences++;
-				genreStatsMap.get(g).addRating(t.getRating());				
-				genreStatsMap.get(g).addUserRating(t.getUserRating());			
-				genreStatsMap.get(g).addRuntime(t.getRuntimeString());
+				
+				genreStatsMap.get(g).addTitle(t);
 			}
 		}
 
@@ -113,6 +119,13 @@ public class Statistics {
 	 */
 	public List<Title> getAnalyzedTitles() {
 		return analyzedTitles;
+	}
+	
+	/**
+	 * @return Stats for all titles together.
+	 */
+	public StatRow getGlobalStats() {
+		return globalStats;
 	}
 
 	/**
@@ -137,13 +150,6 @@ public class Statistics {
 	}
 
 	/**
-	 * @return Total number of titles that was analyzed.
-	 */
-	public int getnTitles() {
-		return nTitles;
-	}
-
-	/**
 	 * @return Total number of movies that was analyzed.
 	 */
 	public int getnMovies() {
@@ -163,8 +169,6 @@ public class Statistics {
 	public int getnSeries() {
 		return nSeries;
 	}
-	
-
 	
 	
 }

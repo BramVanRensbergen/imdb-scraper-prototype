@@ -10,6 +10,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.bramvanrensbergen.imdb_demo.stats.MathUtil;
+
 /**
  * Object representing a movie, series, or episode of a series.
  * @author Bram Van Rensbergen 
@@ -35,7 +37,14 @@ public abstract class Title {
 	
 	private String summaryText;
 	
-	private String runtimeString;		
+	private String runtimeString;	
+	
+	private Integer runtimeMinutes;
+	
+	/**
+	 * Year of release; only used for Movie and Episode (null for Series).
+	 */
+	protected Integer yearOfRelease;
 
 	/**
 	 * The director(s) (for episodes and movies) or creator(s) (for series) of the current title.
@@ -69,6 +78,10 @@ public abstract class Title {
 		this.directorsOrCreators = obtainDirectorOrCreatorsFromHtml();
 		this.summaryText = obtainSummaryTextFromHtml();
 		this.runtimeString = obtainRuntimeFromHtml();
+		
+		if (runtimeString != null) {
+			runtimeMinutes = MathUtil.runtimeDescriptionToMinutes(runtimeString);
+		}
 	}		
 	
 	protected Title(String id, Document doc, double userRating) throws IOException {
@@ -122,8 +135,27 @@ public abstract class Title {
 		return summaryText;
 	}
 
+	/**
+	 * @return The runtime of the movie, in the format '1h 55min', '30min', or '2h' (no other units are used on idmb),
+	 * or null if no runtime was found.
+	 */
 	public String getRuntimeString() {
 		return runtimeString;
+	}
+	
+	/**
+	 * @return The runtime of the movie, in minutes, or null if no runtime was found.
+	 */
+	public Integer getRuntimeMinutes() {
+		return runtimeMinutes;
+	}
+	
+	/**
+	 * @return The year of release of the current title, if found; else, null.
+	 * <br>Always null for Series (as they have no real year of release)
+	 */
+	public Integer getYearOfRelease() {
+		return yearOfRelease;
 	}
 
 	/**
@@ -252,7 +284,7 @@ public abstract class Title {
 	}
 	
 	/**
-	 * Look up the runtime (String, as found on IMDb).
+	 * Look up the runtime (String, as found on IMDb) for the current title in its html Document.
 	 */
 	private String obtainRuntimeFromHtml() {
 		String rt = null;
@@ -262,5 +294,26 @@ public abstract class Title {
 			System.err.println("Could not set runtime for " + id + " (could not find element)");
 		}
 		return rt;		
+	}
+	
+	/**
+	 * Look up the year of release for the current title in its html Document.
+	 */
+	protected Integer obtainYearOfReleaseFromHtml() {
+		try {
+			String ymd = doc.select(".subtext meta[itemprop=\"datePublished\"]").first().attr("content");
+			int year = Integer.parseInt(ymd.split("-")[0]);
+			
+			if (year > 1500 && year < 5000) {
+				return year;
+			}
+			
+		} catch (NumberFormatException e) {
+			System.err.println("Could not set year for " + id + " (could not convert to int)");
+		} catch (NullPointerException e) {
+			System.err.println("Could not set year for " + id + " (could not find element)");
+		}
+		
+		return null;
 	}
 }

@@ -32,6 +32,8 @@ public class Episode extends Title {
 		
 		Element seasonInfo = doc.select(".navigation_panel .bp_heading").first();		
 		seasonAndEpisodeNumberDesc = seasonInfo.text();		
+		
+		this.yearOfRelease = obtainYearOfReleaseFromHtml();
 	}
 	
 	/**

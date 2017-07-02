@@ -14,15 +14,22 @@
 <body>
 	<div class="stats container">
 	
-	<div th:if="${stats.nTitles != 0}">	
+	<div th:if="${stats.globalStats.nbOfOccurrences != 0}">	
 		<h1>IMDb Stats</h1>
 		<a href="../" class="returnLink">Return</a>
-		<p id="basicInfo">
-			Analyzed <span th:text="${stats.nTitles}">number</span> titles,
+		<p>
+			Analyzed <span th:text="${stats.globalStats.nbOfOccurrences}">number</span> titles,
 			containing <span th:text="${stats.nMovies}">number</span> movies, 
 			<span th:text="${stats.nSeries}">number</span> TV-Shows, and 
 			<span th:text="${stats.nEpisodes}">number</span> episodes.
 		</p>
+		<p>These titles have a mean runtime of <span th:text="${stats.globalStats.avgRuntime}">average runtime</span>, and
+		a 'mean' year of release of <span th:text="${stats.globalStats.avgYearOfRelease}">average year</span> (series are not included, episodes are).</p>
+		<p>The titles have a mean IMDb score of <span th:text="${stats.globalStats.avgRating}">average rating</span>
+			<span th:if="${stats.globalStats.avgUserRating == null}">.</span>			
+			<span th:if="${stats.globalStats.avgUserRating}">, while you rated them on average 
+				<span th:text="${stats.globalStats.avgUserRating}">average rating</span>.
+			</span></p>
 
 		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			
@@ -38,7 +45,8 @@
 						<th:block th:each="title: ${stats.analyzedTitles}">
 							<div class="titleEntry">
 								<h1>
-									<a th:href="${title.url}" th:text="${title.title}"	target="_BLANK">Title</a><small th:text="${title.subTitle} ? ${title.subTitle}"></small>
+									<a th:href="${title.url}" th:text="${title.title}"	target="_BLANK">Title</a>
+									<small th:text="${title.subTitle} ? ${title.subTitle}"></small>
 								</h1>
 
 								<table>
@@ -53,6 +61,10 @@
 									<tr>
 										<th>Runtime</th>
 										<td th:text="${title.runtimeString} ? ${title.runtimeString} : 'Not found :('">Genres</td>
+									</tr>
+									<tr th:if="${title.yearOfRelease}">
+										<th>Year of Release</th>
+										<td	th:text="${title.yearOfRelease}">Your Rating</td>
 									</tr>
 									<tr>
 										<th>Genres</th>
@@ -107,14 +119,16 @@
 								<th>Avg. title rating</th>
 								<th>Your title rating</th>
 								<th>Avg. runtime</th>
+								<th>Avg. Year</th>
 							</tr>
 							<tr th:each="statRow : ${stats.actorStats}">
 								<td><a th:href="${statRow.url}" th:text="${statRow.name}" target="_BLANK">
 									Actors</a></td>
 								<td th:text="${statRow.nbOfOccurrences}">Count</td>
-								<td th:text="${statRow.ratingAvg} ? ${statRow.ratingAvg}">Rating</td>
-								<td th:text="${statRow.userRatingAvg} ? ${statRow.userRatingAvg}">User Rating</td>
-								<td th:text="${statRow.runtimeAvg} ? ${statRow.runtimeAvg}">Runtime</td>
+								<td th:text="${statRow.avgRating} ? ${statRow.avgRating}">Rating</td>
+								<td th:text="${statRow.avgUserRating} ? ${statRow.avgUserRating}">User Rating</td>
+								<td th:text="${statRow.avgRuntime} ? ${statRow.avgRuntime}">Runtime</td>
+								<td th:text="${statRow.avgYearOfRelease} ? ${statRow.avgYearOfRelease}">Year Of Release</td>
 							</tr>
 						</table>		
 					</div>
@@ -142,14 +156,16 @@
 									<th>Avg. title rating</th>
 									<th>Your title rating</th>
 									<th>Avg. runtime</th>
+									<th>Avg. Year</th>
 								</tr>
 								<tr th:each="statRow : ${stats.directorStats}">
 									<td><a th:href="${statRow.url}"
 										th:text="${statRow.name}" target="_BLANK">Actors</a></td>
 									<td th:text="${statRow.nbOfOccurrences}">Count</td>
-									<td th:text="${statRow.ratingAvg} ? ${statRow.ratingAvg}">Rating</td>
-									<td th:text="${statRow.userRatingAvg} ? ${statRow.userRatingAvg}">User Rating</td>
-									<td th:text="${statRow.runtimeAvg} ? ${statRow.runtimeAvg}">Runtime</td>									
+									<td th:text="${statRow.avgRating} ? ${statRow.avgRating}">Rating</td>
+									<td th:text="${statRow.avgUserRating} ? ${statRow.avgUserRating}">User Rating</td>
+									<td th:text="${statRow.avgRuntime} ? ${statRow.avgRuntime}">Runtime</td>	
+									<td th:text="${statRow.avgYearOfRelease} ? ${statRow.avgYearOfRelease}">Year Of Release</td>																	
 								</tr>
 							</table>									
 					</div>
@@ -175,13 +191,15 @@
 									<th>Avg. title rating</th>
 									<th>Your title rating</th>
 									<th>Avg. runtime</th>
+									<th>Avg. Year</th>
 								</tr>
 								<tr th:each="statRow : ${stats.genreStats}">
 									<td th:text="${statRow.name}">Name</td>
 									<td th:text="${statRow.nbOfOccurrences}">Count</td>
-									<td th:text="${statRow.ratingAvg} ? ${statRow.ratingAvg}">Rating</td>
-									<td th:text="${statRow.userRatingAvg} ? ${statRow.userRatingAvg}">User Rating</td>
-									<td th:text="${statRow.runtimeAvg} ? ${statRow.runtimeAvg}">Runtime</td>	
+									<td th:text="${statRow.avgRating} ? ${statRow.avgRating}">Rating</td>
+									<td th:text="${statRow.avgUserRating} ? ${statRow.avgUserRating}">User Rating</td>
+									<td th:text="${statRow.avgRuntime} ? ${statRow.avgRuntime}">Runtime</td>	
+									<td th:text="${statRow.avgYearOfRelease} ? ${statRow.avgYearOfRelease}">Year Of Release</td>
 								</tr>
 							</table>									
 					</div>
@@ -189,7 +207,7 @@
 			</div>
 		</div>
 	</div>
-	<div th:if="${stats.nTitles == 0}" id="noResults">	
+	<div th:if="${stats.globalStats.nbOfOccurrences == 0}" id="noResults">	
 		<h2>No valid titles found :(</h2>
 		<a href="../">Try again</a>	
 	</div>
