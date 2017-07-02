@@ -13,6 +13,8 @@ and looks up some data for these titles:
 	
 You can do also input your exported IMDb ratings, in which case your own rating is included in the statistics.
 
+See [sampleOutput.html](sampleOutput.html to get an idea of the output you will get.
+
 Note that the lookup happens synchronously, so this may not work if you look up a large amount of ratings at once. 
 I'll try to get around to looking them up asynchronously...
 
