@@ -20,15 +20,6 @@ public class RequestController {
 
 	@Resource 
 	private TitleLookupService titleLookupService;
-		
-	/**
-	 * Redirect to a page with some statistics for all provided ids.
-	 * <br>URL should contain list of ids, separated by space, comma, plus, or '%20'. 
-	 */
-    @RequestMapping("/")
-    public String showIndex() throws IOException {      	
-        return "index";
-    }
 	
 	/**
 	 * Redirect to a page with some statistics for all provided ids.
