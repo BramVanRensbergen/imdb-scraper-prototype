@@ -1,4 +1,4 @@
-package com.bramvanrensbergen.imdb_demo.stats;
+package com.bramvanrensbergen.imdb_demo.domain.statistics;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.bramvanrensbergen.imdb_demo.titel.Episode;
-import com.bramvanrensbergen.imdb_demo.titel.Movie;
-import com.bramvanrensbergen.imdb_demo.titel.Person;
-import com.bramvanrensbergen.imdb_demo.titel.Series;
-import com.bramvanrensbergen.imdb_demo.titel.Title;
+import com.bramvanrensbergen.imdb_demo.domain.Episode;
+import com.bramvanrensbergen.imdb_demo.domain.Movie;
+import com.bramvanrensbergen.imdb_demo.domain.Person;
+import com.bramvanrensbergen.imdb_demo.domain.Series;
+import com.bramvanrensbergen.imdb_demo.domain.Title;
 
 /**
  * Generate a number of basic stats for the indicated titles.

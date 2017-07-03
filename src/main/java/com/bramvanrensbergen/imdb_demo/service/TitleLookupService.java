@@ -1,4 +1,4 @@
-package com.bramvanrensbergen.imdb_demo.titel;
+package com.bramvanrensbergen.imdb_demo.service;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,6 +17,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+
+import com.bramvanrensbergen.imdb_demo.domain.Episode;
+import com.bramvanrensbergen.imdb_demo.domain.Movie;
+import com.bramvanrensbergen.imdb_demo.domain.Series;
+import com.bramvanrensbergen.imdb_demo.domain.Title;
 
 /**
  * Service to look up titles on IMDb, based on either imdb-ids or on title.
@@ -134,7 +139,7 @@ public class TitleLookupService {
 		    	System.err.println("could not parse imdb page for " + id + ", skipping");
 		    	continue;
 		    }
-		    t.userRating = Double.parseDouble(userRating);
+		    t.setUserRating(Double.parseDouble(userRating));
 		    titlesList.add(t);
 
 		}

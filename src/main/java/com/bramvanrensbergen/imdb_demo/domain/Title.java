@@ -1,4 +1,4 @@
-package com.bramvanrensbergen.imdb_demo.titel;
+package com.bramvanrensbergen.imdb_demo.domain;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,14 +10,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.bramvanrensbergen.imdb_demo.stats.MathUtil;
+import com.bramvanrensbergen.imdb_demo.domain.statistics.MathUtil;
 
 /**
  * Object representing a movie, series, or episode of a series.
  * @author Bram Van Rensbergen 
  */
 public abstract class Title {
-	static final String BASE_URL = "http://www.imdb.com/title/";
+	public static final String BASE_URL = "http://www.imdb.com/title/";
 			
 	protected final String id;
 	
@@ -33,7 +33,7 @@ public abstract class Title {
 		
 	private Double rating;	
 	
-	Double userRating = null;
+	private Double userRating = null;
 	
 	private String summaryText;
 	
@@ -164,6 +164,10 @@ public abstract class Title {
 	 */
 	public Double getUserRating() {
 		return userRating;
+	}
+	
+	public void setUserRating(Double userRating) {
+		this.userRating = userRating;
 	}
 
 	/**

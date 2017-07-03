@@ -1,4 +1,4 @@
-package com.bramvanrensbergen.imdb_demo.stats;
+package com.bramvanrensbergen.imdb_demo.domain.statistics;
 
 import java.util.List;
 

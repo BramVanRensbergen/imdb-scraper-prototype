@@ -1,4 +1,4 @@
-package com.bramvanrensbergen.imdb_demo;
+package com.bramvanrensbergen.imdb_demo.web;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bramvanrensbergen.imdb_demo.stats.Statistics;
-import com.bramvanrensbergen.imdb_demo.titel.TitleLookupService;
+import com.bramvanrensbergen.imdb_demo.domain.statistics.Statistics;
+import com.bramvanrensbergen.imdb_demo.service.TitleLookupService;
 
 
 @Controller

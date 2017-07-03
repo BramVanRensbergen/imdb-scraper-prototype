@@ -1,9 +1,9 @@
-package com.bramvanrensbergen.imdb_demo.stats;
+package com.bramvanrensbergen.imdb_demo.domain.statistics;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bramvanrensbergen.imdb_demo.titel.Title;
+import com.bramvanrensbergen.imdb_demo.domain.Title;
 
 /**
  * Object representing a row of statistics, containing a name (e.g., actor, director, or genre), 
