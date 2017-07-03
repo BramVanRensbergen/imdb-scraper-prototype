@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -49,18 +50,21 @@ public class TitleLookupService {
 			return null;
 		}
 		
-		String id = null;
+		String id = null;		
 		
-		String url = "http://www.imdb.com/find?q=" + title.trim() + "&s=tt";		
-		
-		try {			
+		try {		
+			String url = "http://www.imdb.com/find?q=" + URLEncoder.encode(title.trim(), "UTF-8") + "&s=tt";	
+			System.err.println(url);
 			Document doc = Jsoup.connect(url).get();
-			Element e = doc.select(".findList a").first();
+			Element e = doc.select(".findList .result_text a").first();
+						
+			System.err.println(doc.text());
 			id = Title.getIdFromUrl(e.attr("href"));
+			
 		} catch (IOException e) {
-			System.err.println("Could not reach imdb page at " + url);
+			System.err.println("Could not reach imdb page for " + title);
 		} catch (NullPointerException e) {
-			System.err.println("Could not find any results at " + url);
+			System.err.println("Could not find any results for " + title);
 		}
 	
 		return id;
