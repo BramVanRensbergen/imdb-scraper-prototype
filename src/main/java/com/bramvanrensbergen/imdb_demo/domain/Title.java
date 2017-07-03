@@ -56,11 +56,20 @@ public abstract class Title {
 
 	/**
 	 * Get the imdb id contained in the indicated url.
-	 * @param url containing a title's id, e.g. /title/tt0000186?ref_=tt_ov_dr
-	 * @return the id, e.g. tt0000186
+	 * @param url containing a title's id, e.g. /title/tt0000186 or /title/tt0000186?ref_=tt_ov_dr 
+	 * @return the id, e.g. tt0000186; or null, if the provided url was not formatted correctly
 	 */
 	public static String getIdFromUrl(String url) {
-		return url.split("/title/")[1].split("\\?")[0];
+		if (url == null) {
+			return null;
+		}
+		String[] split = url.split("/title/");
+		
+		if (split.length != 2) {
+			return null;
+		}
+			
+		return split[1].split("\\?")[0];
 	}
 			
 	protected Title(String id, Document doc) throws IOException {
