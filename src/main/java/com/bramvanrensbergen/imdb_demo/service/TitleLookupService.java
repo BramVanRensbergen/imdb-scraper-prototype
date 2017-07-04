@@ -116,6 +116,11 @@ public class TitleLookupService {
 		ArrayList<Title> titlesList = new ArrayList<Title>();
 		
 		for (CSVRecord record : records) {
+			if (record.size() < 9) {
+				System.err.println("invalid record found in exported ratings, not enough columns");
+				continue;
+			}
+			
 			if(record.get(0).equals("position")) {
 				continue; //skip header, is present
 			}
