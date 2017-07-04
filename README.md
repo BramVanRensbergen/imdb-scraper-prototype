@@ -21,3 +21,5 @@ I'll try to get around to looking them up asynchronously...
 To run, download the project and build using maven (e.g., './mvnw spring-boot:run'), then visit the index page in your browser (e.g., localhost:8080).
 
 Note: I'm well aware that Java is not the ideal tool for this functionality, I was just looking for a simple web-service to play around with Spring :)
+
+Requires Java 8.
