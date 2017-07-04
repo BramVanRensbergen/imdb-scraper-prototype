@@ -54,11 +54,9 @@ public class TitleLookupService {
 		
 		try {		
 			String url = "http://www.imdb.com/find?q=" + URLEncoder.encode(title.trim(), "UTF-8") + "&s=tt";	
-			System.err.println(url);
 			Document doc = Jsoup.connect(url).get();
 			Element e = doc.select(".findList .result_text a").first();
 						
-			System.err.println(doc.text());
 			id = Title.getIdFromUrl(e.attr("href"));
 			
 		} catch (IOException e) {
