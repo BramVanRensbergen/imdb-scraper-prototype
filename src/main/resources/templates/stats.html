@@ -25,8 +25,7 @@
 		</p>
 		<p>These titles have a mean runtime of <span th:text="${stats.globalStats.avgRuntime}">average runtime</span>, and
 		a 'mean' year of release of <span th:text="${stats.globalStats.avgYearOfRelease}">average year</span> (series are not included, episodes are).</p>
-		<p>The titles have a mean IMDb score of <span th:text="${stats.globalStats.avgRating}">average rating</span>
-			<span th:if="${stats.globalStats.avgUserRating == null}">.</span>			
+		<p>The titles have a mean IMDb score of <span th:text="${stats.globalStats.avgRating}">average rating</span><span th:if="${stats.globalStats.avgUserRating == null}">.</span>			
 			<span th:if="${stats.globalStats.avgUserRating}">, while you rated them on average 
 				<span th:text="${stats.globalStats.avgUserRating}">average rating</span>.
 			</span></p>
